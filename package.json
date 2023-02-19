@@ -1,26 +1,32 @@
 {
-  "name": "yemusic",
-  "version": "0.0.0",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
-    "lint": "eslint . --ext .ts --ext .tsx --color",
-    "format": "eslint . --ext .ts --ext .tsx --color --fix"
-  },
-  "devDependencies": {
-    "@types/node": "^17.0.12",
-    "@yemusic/eslint-configs": "workspace:*",
-    "prettier": "latest",
-    "turbo": "latest",
-    "typescript": "^4.9.5"
-  },
-  "engines": {
-    "node": ">=14.0.0"
-  },
-  "packageManager": "pnpm@7.18.1"
+	"name": "yemusic",
+	"version": "0.0.0",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"common/*",
+		"packages/*"
+	],
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev --parallel",
+		"lint": "eslint . --ext .ts --ext .tsx --color",
+		"format": "eslint . --ext .ts --ext .tsx --color --fix"
+	},
+	"devDependencies": {
+		"@types/node": "^17.0.12",
+		"@yemusic/eslint-configs": "workspace:*",
+		"eslint": "^8.33.0",
+		"prettier": "latest",
+		"turbo": "latest",
+		"typescript": "^4.9.5"
+	},
+	"engines": {
+		"node": ">=14.0.0"
+	},
+	"packageManager": "pnpm@7.18.1",
+	"dependencies": {
+		"@vanilla-extract/css": "^1.9.5",
+		"classnames": "^2.3.2"
+	}
 }
