@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { createElement } from 'react';
 
-import { textDisplayVariants, textColorVariants } from './Text.css';
+import { textColorVariants, textDisplayVariants } from './Text.css';
 import { TextBaseProps } from './types';
 
 export interface TextDisplayProps extends TextBaseProps, Omit<React.HTMLAttributes<HTMLElement>, 'color'> {
@@ -8,18 +8,16 @@ export interface TextDisplayProps extends TextBaseProps, Omit<React.HTMLAttribut
 }
 
 export const TextDisplay = ({
-	element: TextDisplayElement = 'p',
+	element = 'p',
 	color = 'onSurface',
 	className,
 	size = 'medium',
 	...otherProps
 }: TextDisplayProps) => {
-	return (
-		<TextDisplayElement
-			className={[textColorVariants[color], textDisplayVariants[size], className].filter(Boolean).join(' ').trim()}
-			{...otherProps}
-		/>
-	);
+	return createElement(element, {
+		className: [textColorVariants[color], textDisplayVariants[size], className].filter(Boolean).join(' ').trim(),
+		...otherProps,
+	});
 };
 
 export default TextDisplay;

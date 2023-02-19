@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createElement } from 'react';
 
 import classNames from 'classnames';
 
@@ -25,7 +25,7 @@ interface GroupProps extends React.HTMLAttributes<HTMLElement> {
 export const Group = ({
 	alignItems,
 	className,
-	element: GroupElement = 'div',
+	element = 'div',
 	grow,
 	justifyContent,
 	noWrap,
@@ -33,9 +33,9 @@ export const Group = ({
 	paddingHorizontal,
 	paddingVertical,
 	...otherProps
-}: GroupProps) => (
-	<GroupElement
-		className={classNames(
+}: GroupProps) => {
+	return createElement(element, {
+		className: classNames(
 			groupBaseVariants.root,
 			alignItems && groupAlignItemsVariants[alignItems],
 			grow && groupBaseVariants.grow,
@@ -45,9 +45,9 @@ export const Group = ({
 			paddingHorizontal && groupPaddingHorizontalVariants[paddingHorizontal],
 			paddingVertical && groupPaddingVerticalVariants[paddingVertical],
 			className
-		)}
-		{...otherProps}
-	/>
-);
+		),
+		...otherProps,
+	});
+};
 
 export default Group;

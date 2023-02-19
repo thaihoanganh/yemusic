@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createElement } from 'react';
 
 import classNames from 'classnames';
 
@@ -24,16 +24,16 @@ interface StackProps extends React.HTMLAttributes<HTMLElement> {
 export const Stack = ({
 	alignItems,
 	className,
-	element: StackElement = 'div',
+	element = 'div',
 	grow,
 	justifyContent,
 	spacing,
 	paddingHorizontal,
 	paddingVertical,
 	...otherProps
-}: StackProps) => (
-	<StackElement
-		className={classNames(
+}: StackProps) => {
+	return createElement(element, {
+		className: classNames(
 			stackBaseVariants.root,
 			alignItems && stackAlignItemsVariants[alignItems],
 			grow && stackBaseVariants.grow,
@@ -42,9 +42,9 @@ export const Stack = ({
 			paddingHorizontal && stackPaddingHorizontalVariants[paddingHorizontal],
 			paddingVertical && stackPaddingVerticalVariants[paddingVertical],
 			className
-		)}
-		{...otherProps}
-	/>
-);
+		),
+		...otherProps,
+	});
+};
 
 export default Stack;
