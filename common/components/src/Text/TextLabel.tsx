@@ -1,6 +1,6 @@
 import React, { createElement } from 'react';
 
-import { textColorVariants, textLabelVariants } from './Text.css';
+import { textColorVariants, textLabelVariants, textVariants } from './Text.css';
 import { TextBaseProps } from './types';
 
 export interface TextLabelProps extends TextBaseProps, Omit<React.HTMLAttributes<HTMLElement>, 'color'> {
@@ -9,13 +9,16 @@ export interface TextLabelProps extends TextBaseProps, Omit<React.HTMLAttributes
 
 export const TextLabel = ({
 	element = 'p',
-	color = 'onSurface',
+	color = 'on-surface',
 	className,
 	size = 'medium',
 	...otherProps
 }: TextLabelProps) => {
 	return createElement(element, {
-		className: [textColorVariants[color], textLabelVariants[size], className].filter(Boolean).join(' ').trim(),
+		className: [textVariants.initial, textColorVariants[color], textLabelVariants[size], className]
+			.filter(Boolean)
+			.join(' ')
+			.trim(),
 		...otherProps,
 	});
 };

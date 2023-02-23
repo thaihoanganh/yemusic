@@ -1,6 +1,6 @@
 import React, { createElement } from 'react';
 
-import { textColorVariants, textHeadlineVariants } from './Text.css';
+import { textColorVariants, textHeadlineVariants, textVariants } from './Text.css';
 import { TextBaseProps } from './types';
 
 export interface TextHeadlineProps extends TextBaseProps, Omit<React.HTMLAttributes<HTMLElement>, 'color'> {
@@ -9,13 +9,16 @@ export interface TextHeadlineProps extends TextBaseProps, Omit<React.HTMLAttribu
 
 export const TextHeadline = ({
 	element = 'p',
-	color = 'onSurface',
+	color = 'on-surface',
 	className,
 	size = 'medium',
 	...otherProps
 }: TextHeadlineProps) => {
 	return createElement(element, {
-		className: [textColorVariants[color], textHeadlineVariants[size], className].filter(Boolean).join(' ').trim(),
+		className: [textVariants.initial, textColorVariants[color], textHeadlineVariants[size], className]
+			.filter(Boolean)
+			.join(' ')
+			.trim(),
 		...otherProps,
 	});
 };

@@ -1,62 +1,62 @@
 export type ThemeColors =
 	| 'primary'
-	| 'onPrimary'
-	| 'primaryContainer'
-	| 'onPrimaryContainer'
+	| 'on-primary'
+	| 'primary-container'
+	| 'on-primary-container'
 	| 'secondary'
-	| 'onSecondary'
-	| 'secondaryContainer'
-	| 'onSecondaryContainer'
+	| 'on-secondary'
+	| 'secondary-container'
+	| 'on-secondary-container'
 	| 'tertiary'
-	| 'onTertiary'
-	| 'tertiaryContainer'
-	| 'onTertiaryContainer'
+	| 'on-tertiary'
+	| 'tertiary-container'
+	| 'on-tertiary-container'
 	| 'error'
-	| 'onError'
-	| 'errorContainer'
-	| 'onErrorContainer'
+	| 'on-error'
+	| 'error-container'
+	| 'on-error-container'
 	| 'background'
-	| 'onBackground'
+	| 'on-background'
 	| 'surface'
-	| 'onSurface'
-	| 'surfaceVariant'
-	| 'onSurfaceVariant'
+	| 'on-surface'
+	| 'surface-variant'
+	| 'on-surface-variant'
 	| 'outline'
-	| 'outlineVariant'
+	| 'outline-variant'
 	| 'shadow'
 	| 'scrim'
-	| 'inversePrimary'
-	| 'inverseOnSurface'
-	| 'inverseSurface'
-	| 'primaryDynamic'
-	| 'onPrimaryDynamic'
-	| 'primaryContainerDynamic'
-	| 'onPrimaryContainerDynamic'
-	| 'secondaryDynamic'
-	| 'onSecondaryDynamic'
-	| 'secondaryContainerDynamic'
-	| 'onSecondaryContainerDynamic'
-	| 'tertiaryDynamic'
-	| 'onTertiaryDynamic'
-	| 'tertiaryContainerDynamic'
-	| 'onTertiaryContainerDynamic'
-	| 'errorDynamic'
-	| 'onErrorDynamic'
-	| 'errorContainerDynamic'
-	| 'onErrorContainerDynamic'
-	| 'backgroundDynamic'
-	| 'onBackgroundDynamic'
-	| 'surfaceDynamic'
-	| 'onSurfaceDynamic'
-	| 'surfaceVariantDynamic'
-	| 'onSurfaceVariantDynamic'
-	| 'outlineDynamic'
-	| 'outlineVariantDynamic'
-	| 'shadowDynamic'
-	| 'scrimDynamic'
-	| 'inversePrimaryDynamic'
-	| 'inverseOnSurfaceDynamic'
-	| 'inverseSurfaceDynamic';
+	| 'inverse-primary'
+	| 'inverse-on-surface'
+	| 'inverse-surface'
+	| 'primary-dynamic'
+	| 'on-primary-dynamic'
+	| 'primary-container-dynamic'
+	| 'on-primary-container-dynamic'
+	| 'secondary-dynamic'
+	| 'on-secondary-dynamic'
+	| 'secondary-container-dynamic'
+	| 'on-secondary-container-dynamic'
+	| 'tertiary-dynamic'
+	| 'on-tertiary-dynamic'
+	| 'tertiary-container-dynamic'
+	| 'on-tertiary-container-dynamic'
+	| 'error-dynamic'
+	| 'on-error-dynamic'
+	| 'error-container-dynamic'
+	| 'on-error-container-dynamic'
+	| 'background-dynamic'
+	| 'on-background-dynamic'
+	| 'surface-dynamic'
+	| 'on-surface-dynamic'
+	| 'surface-variant-dynamic'
+	| 'on-surface-variant-dynamic'
+	| 'outline-dynamic'
+	| 'outline-variant-dynamic'
+	| 'shadow-dynamic'
+	| 'scrim-dynamic'
+	| 'inverse-primary-dynamic'
+	| 'inverse-on-surface-dynamic'
+	| 'inverse-surface-dynamic';
 
 export interface Theme {
 	spacing: {
@@ -66,14 +66,7 @@ export interface Theme {
 		large: number;
 		xlarge: number;
 	};
-	palette: Record<
-		ThemeColors,
-		{
-			r: number;
-			g: number;
-			b: number;
-		}
-	>;
+	palette: Record<ThemeColors, [number, number, number]>;
 }
 
 export const themeConfigs: Theme = {
@@ -85,356 +78,124 @@ export const themeConfigs: Theme = {
 		xlarge: 32,
 	},
 	palette: {
-		primary: {
-			r: 255,
-			g: 180,
-			b: 166,
-		},
-		onPrimary: {
-			r: 102,
-			g: 7,
-			b: 0,
-		},
-		primaryContainer: {
-			r: 144,
-			g: 14,
-			b: 0,
-		},
-		onPrimaryContainer: {
-			r: 255,
-			g: 218,
-			b: 212,
-		},
-		secondary: {
-			r: 231,
-			g: 189,
-			b: 181,
-		},
-		onSecondary: {
-			r: 68,
-			g: 42,
-			b: 37,
-		},
-		secondaryContainer: {
-			r: 93,
-			g: 63,
-			b: 58,
-		},
-		onSecondaryContainer: {
-			r: 255,
-			g: 218,
-			b: 212,
-		},
-		tertiary: {
-			r: 221,
-			g: 196,
-			b: 140,
-		},
-		onTertiary: {
-			r: 61,
-			g: 46,
-			b: 4,
-		},
-		tertiaryContainer: {
-			r: 85,
-			g: 69,
-			b: 25,
-		},
-		onTertiaryContainer: {
-			r: 250,
-			g: 224,
-			b: 166,
-		},
-		error: {
-			r: 255,
-			g: 180,
-			b: 171,
-		},
-		onError: {
-			r: 105,
-			g: 0,
-			b: 5,
-		},
-		errorContainer: {
-			r: 147,
-			g: 0,
-			b: 10,
-		},
-		onErrorContainer: {
-			r: 255,
-			g: 180,
-			b: 171,
-		},
-		background: {
-			r: 32,
-			g: 26,
-			b: 25,
-		},
-		onBackground: {
-			r: 237,
-			g: 224,
-			b: 221,
-		},
-		surface: {
-			r: 32,
-			g: 26,
-			b: 25,
-		},
-		onSurface: {
-			r: 237,
-			g: 224,
-			b: 221,
-		},
-		surfaceVariant: {
-			r: 83,
-			g: 67,
-			b: 64,
-		},
-		onSurfaceVariant: {
-			r: 216,
-			g: 194,
-			b: 190,
-		},
-		outline: {
-			r: 160,
-			g: 140,
-			b: 137,
-		},
-		outlineVariant: {
-			r: 83,
-			g: 67,
-			b: 64,
-		},
-		shadow: {
-			r: 0,
-			g: 0,
-			b: 0,
-		},
-		scrim: {
-			r: 0,
-			g: 0,
-			b: 0,
-		},
-		inverseSurface: {
-			r: 237,
-			g: 224,
-			b: 221,
-		},
-		inverseOnSurface: {
-			r: 54,
-			g: 47,
-			b: 45,
-		},
-		inversePrimary: {
-			r: 188,
-			g: 22,
-			b: 0,
-		},
-		primaryDynamic: {
-			r: 255,
-			g: 180,
-			b: 166,
-		},
-		onPrimaryDynamic: {
-			r: 102,
-			g: 7,
-			b: 0,
-		},
-		primaryContainerDynamic: {
-			r: 144,
-			g: 14,
-			b: 0,
-		},
-		onPrimaryContainerDynamic: {
-			r: 255,
-			g: 218,
-			b: 212,
-		},
-		secondaryDynamic: {
-			r: 231,
-			g: 189,
-			b: 181,
-		},
-		onSecondaryDynamic: {
-			r: 68,
-			g: 42,
-			b: 37,
-		},
-		secondaryContainerDynamic: {
-			r: 93,
-			g: 63,
-			b: 58,
-		},
-		onSecondaryContainerDynamic: {
-			r: 255,
-			g: 218,
-			b: 212,
-		},
-		tertiaryDynamic: {
-			r: 221,
-			g: 196,
-			b: 140,
-		},
-		onTertiaryDynamic: {
-			r: 61,
-			g: 46,
-			b: 4,
-		},
-		tertiaryContainerDynamic: {
-			r: 85,
-			g: 69,
-			b: 25,
-		},
-		onTertiaryContainerDynamic: {
-			r: 250,
-			g: 224,
-			b: 166,
-		},
-		errorDynamic: {
-			r: 255,
-			g: 180,
-			b: 171,
-		},
-		onErrorDynamic: {
-			r: 105,
-			g: 0,
-			b: 5,
-		},
-		errorContainerDynamic: {
-			r: 147,
-			g: 0,
-			b: 10,
-		},
-		onErrorContainerDynamic: {
-			r: 255,
-			g: 180,
-			b: 171,
-		},
-		backgroundDynamic: {
-			r: 32,
-			g: 26,
-			b: 25,
-		},
-		onBackgroundDynamic: {
-			r: 237,
-			g: 224,
-			b: 221,
-		},
-		surfaceDynamic: {
-			r: 32,
-			g: 26,
-			b: 25,
-		},
-		onSurfaceDynamic: {
-			r: 237,
-			g: 224,
-			b: 221,
-		},
-		surfaceVariantDynamic: {
-			r: 83,
-			g: 67,
-			b: 64,
-		},
-		onSurfaceVariantDynamic: {
-			r: 216,
-			g: 194,
-			b: 190,
-		},
-		outlineDynamic: {
-			r: 160,
-			g: 140,
-			b: 137,
-		},
-		outlineVariantDynamic: {
-			r: 83,
-			g: 67,
-			b: 64,
-		},
-		shadowDynamic: {
-			r: 0,
-			g: 0,
-			b: 0,
-		},
-		scrimDynamic: {
-			r: 0,
-			g: 0,
-			b: 0,
-		},
-		inverseSurfaceDynamic: {
-			r: 237,
-			g: 224,
-			b: 221,
-		},
-		inverseOnSurfaceDynamic: {
-			r: 54,
-			g: 47,
-			b: 45,
-		},
-		inversePrimaryDynamic: {
-			r: 188,
-			g: 22,
-			b: 0,
-		},
+		['primary']: [255, 180, 166],
+		['on-primary']: [102, 7, 0],
+		['primary-container']: [144, 14, 0],
+		['on-primary-container']: [255, 218, 212],
+		['secondary']: [231, 189, 181],
+		['on-secondary']: [68, 42, 37],
+		['secondary-container']: [93, 63, 58],
+		['on-secondary-container']: [255, 218, 212],
+		['tertiary']: [221, 196, 140],
+		['on-tertiary']: [61, 46, 4],
+		['tertiary-container']: [85, 69, 25],
+		['on-tertiary-container']: [250, 224, 166],
+		['error']: [255, 180, 171],
+		['on-error']: [105, 0, 5],
+		['error-container']: [147, 0, 10],
+		['on-error-container']: [255, 180, 171],
+		['background']: [32, 26, 25],
+		['on-background']: [237, 224, 221],
+		['surface']: [32, 26, 25],
+		['on-surface']: [237, 224, 221],
+		['surface-variant']: [83, 67, 64],
+		['on-surface-variant']: [216, 194, 190],
+		['outline']: [160, 140, 137],
+		['outline-variant']: [83, 67, 64],
+		['shadow']: [0, 0, 0],
+		['scrim']: [0, 0, 0],
+		['inverse-surface']: [237, 224, 221],
+		['inverse-on-surface']: [54, 47, 45],
+		['inverse-primary']: [188, 22, 0],
+		['primary-dynamic']: [255, 180, 166],
+		['on-primary-dynamic']: [102, 7, 0],
+		['primary-container-dynamic']: [144, 14, 0],
+		['on-primary-container-dynamic']: [255, 218, 212],
+		['secondary-dynamic']: [231, 189, 181],
+		['on-secondary-dynamic']: [68, 42, 37],
+		['secondary-container-dynamic']: [93, 63, 58],
+		['on-secondary-container-dynamic']: [255, 218, 212],
+		['tertiary-dynamic']: [221, 196, 140],
+		['on-tertiary-dynamic']: [61, 46, 4],
+		['tertiary-container-dynamic']: [85, 69, 25],
+		['on-tertiary-container-dynamic']: [250, 224, 166],
+		['error-dynamic']: [255, 180, 171],
+		['on-error-dynamic']: [105, 0, 5],
+		['error-container-dynamic']: [147, 0, 10],
+		['on-error-container-dynamic']: [255, 180, 171],
+		['background-dynamic']: [32, 26, 25],
+		['on-background-dynamic']: [237, 224, 221],
+		['surface-dynamic']: [32, 26, 25],
+		['on-surface-dynamic']: [237, 224, 221],
+		['surface-variant-dynamic']: [83, 67, 64],
+		['on-surface-variant-dynamic']: [216, 194, 190],
+		['outline-dynamic']: [160, 140, 137],
+		['outline-variant-dynamic']: [83, 67, 64],
+		['shadow-dynamic']: [0, 0, 0],
+		['scrim-dynamic']: [0, 0, 0],
+		['inverse-surface-dynamic']: [237, 224, 221],
+		['inverse-on-surface-dynamic']: [54, 47, 45],
+		['inverse-primary-dynamic']: [188, 22, 0],
 	},
 };
 
-export const themePaletteKeys: ThemeColors[] = [
-	'background',
-	'error',
-	'errorContainer',
-	'inverseOnSurface',
-	'inversePrimary',
-	'inverseSurface',
-	'onBackground',
-	'onError',
-	'onErrorContainer',
-	'onPrimary',
-	'onPrimaryContainer',
-	'onSecondary',
-	'onSecondaryContainer',
-	'onSurface',
-	'onSurfaceVariant',
-	'onTertiary',
-	'onTertiaryContainer',
-	'outline',
-	'outlineVariant',
+export const themePaletteKeys = [
 	'primary',
-	'primaryContainer',
-	'scrim',
+	'on-primary',
+	'primary-container',
+	'on-primary-container',
 	'secondary',
-	'secondaryContainer',
-	'shadow',
-	'surface',
-	'surfaceVariant',
+	'on-secondary',
+	'secondary-container',
+	'on-secondary-container',
 	'tertiary',
-	'tertiaryContainer',
-	'backgroundDynamic',
-	'errorDynamic',
-	'errorContainerDynamic',
-	'inverseOnSurfaceDynamic',
-	'inversePrimaryDynamic',
-	'inverseSurfaceDynamic',
-	'onBackgroundDynamic',
-	'onErrorDynamic',
-	'onErrorContainerDynamic',
-	'onPrimaryDynamic',
-	'onPrimaryContainerDynamic',
-	'onSecondaryDynamic',
-	'onSecondaryContainerDynamic',
-	'onSurfaceDynamic',
-	'onSurfaceVariantDynamic',
-	'onTertiaryDynamic',
-	'onTertiaryContainerDynamic',
-	'outlineDynamic',
-	'outlineVariantDynamic',
-	'primaryDynamic',
-	'primaryContainerDynamic',
-	'scrimDynamic',
-	'secondaryDynamic',
-	'secondaryContainerDynamic',
-	'shadowDynamic',
-	'surfaceDynamic',
-	'surfaceVariantDynamic',
-	'tertiaryDynamic',
-	'tertiaryContainerDynamic',
-];
+	'on-tertiary',
+	'tertiary-container',
+	'on-tertiary-container',
+	'error',
+	'on-error',
+	'error-container',
+	'on-error-container',
+	'background',
+	'on-background',
+	'surface',
+	'on-surface',
+	'surface-variant',
+	'on-surface-variant',
+	'outline',
+	'outline-variant',
+	'shadow',
+	'scrim',
+	'inverse-primary',
+	'inverse-on-surface',
+	'inverse-surface',
+	'primary-dynamic',
+	'on-primary-dynamic',
+	'primary-container-dynamic',
+	'on-primary-container-dynamic',
+	'secondary-dynamic',
+	'on-secondary-dynamic',
+	'secondary-container-dynamic',
+	'on-secondary-container-dynamic',
+	'tertiary-dynamic',
+	'on-tertiary-dynamic',
+	'tertiary-container-dynamic',
+	'on-tertiary-container-dynamic',
+	'error-dynamic',
+	'on-error-dynamic',
+	'error-container-dynamic',
+	'on-error-container-dynamic',
+	'background-dynamic',
+	'on-background-dynamic',
+	'surface-dynamic',
+	'on-surface-dynamic',
+	'surface-variant-dynamic',
+	'on-surface-variant-dynamic',
+	'outline-dynamic',
+	'outline-variant-dynamic',
+	'shadow-dynamic',
+	'scrim-dynamic',
+	'inverse-primary-dynamic',
+	'inverse-on-surface-dynamic',
+	'inverse-surface-dynamic',
+] as const;

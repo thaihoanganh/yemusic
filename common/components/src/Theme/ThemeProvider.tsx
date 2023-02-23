@@ -9,23 +9,14 @@ export interface ThemeProviderProps extends React.PropsWithChildren {
 	colorScheme?: 'light' | 'dark';
 }
 
-const createInlineColorsVars = (
-	vars: Record<
-		string,
-		{
-			r: number;
-			g: number;
-			b: number;
-		}
-	>
-) => {
+const createInlineColorsVars = (vars: Record<string, [number, number, number]>) => {
 	const inlineVars: {
 		[key: string]: string;
 	} = {};
 
 	Object.keys(vars).forEach(key => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		inlineVars[(createThemeVars.palette as any)[key]] = `${vars[key].r}, ${vars[key].g}, ${vars[key].b}`;
+		inlineVars[(createThemeVars.palette as any)[key]] = `${vars[key][0]}, ${vars[key][1]}, ${vars[key][2]}`;
 	});
 
 	return inlineVars;
