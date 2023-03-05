@@ -1,6 +1,6 @@
 import { createVar, fallbackVar } from '@vanilla-extract/css';
 
-import { ThemeColors, themePaletteKeys } from './theme.config';
+import { ThemeColors, themePaletteKeys, themeConfigs } from './theme.config';
 
 export const backgroundVar = createVar();
 
@@ -20,10 +20,10 @@ export const createThemeVars = {
 } as const;
 
 const themePaletteColors = themePaletteKeys.reduce((acc, key) => {
-	acc[key] = `rgb(${fallbackVar(createThemeVars.palette[key])}, ${fallbackVar(
-		createThemeVars.stateLayerOpacity,
-		'1'
-	)})`;
+	acc[key] = `rgb(${fallbackVar(
+		createThemeVars.palette[key],
+		`${themeConfigs.palette[key][0]}, ${themeConfigs.palette[key][0]}, ${themeConfigs.palette[key][0]}`
+	)}, ${fallbackVar(createThemeVars.stateLayerOpacity, '1')})`;
 	return acc;
 }, {} as Record<ThemeColors, string>);
 
