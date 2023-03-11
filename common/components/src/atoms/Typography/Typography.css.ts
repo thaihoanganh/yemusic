@@ -130,4 +130,9 @@ export const typographyOtherVariants = styleVariants({
 	root: {
 		margin: 0,
 	},
+	truncate: {
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
+		whiteSpace: 'nowrap',
+	},
 });
