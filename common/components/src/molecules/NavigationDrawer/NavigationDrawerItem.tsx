@@ -49,8 +49,8 @@ export const NavigationDrawerItem = ({ icon, iconActive, isActive, label, to }: 
 								})}
 								<Typography
 									color={isActive ? 'on-secondary-container' : isHover ? 'on-surface' : 'on-surface-variant'}
-									variant="title"
-									size="small"
+									variant="label"
+									size="large"
 								>
 									{label}
 								</Typography>
