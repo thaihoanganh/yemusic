@@ -42,23 +42,18 @@ export const frameJustifyContentVariants = styleVariants({
 
 export const frameCornerRadiusVariants = styleVariants({
 	xsmall: {
-		overflow: 'hidden',
 		borderRadius: themeVars.spacing.xsmall,
 	},
 	small: {
-		overflow: 'hidden',
 		borderRadius: themeVars.spacing.small,
 	},
 	medium: {
-		overflow: 'hidden',
 		borderRadius: themeVars.spacing.medium,
 	},
 	large: {
-		overflow: 'hidden',
 		borderRadius: themeVars.spacing.large,
 	},
 	xlarge: {
-		overflow: 'hidden',
 		borderRadius: themeVars.spacing.xlarge,
 	},
 });
@@ -128,6 +123,9 @@ export const frameVerticalPaddingVariants = styleVariants({
 });
 
 export const frameOtherVariants = styleVariants({
+	root: {
+		overflow: 'hidden',
+	},
 	fillContainer: {
 		flexGrow: 1,
 	},
