@@ -1,38 +1,41 @@
 import { UnstyledButton } from '../../atoms/Button';
 import { Group } from '../../atoms/Frame';
-import { ArrowBackIcon, ArrowForwardIcon, PaletteIcon, SettingsIcon } from '../../atoms/Icons';
-import DesktopSearch from '../DesktopSearch';
+import { ArrowBackIcon, ArrowForwardIcon } from '../../atoms/Icons';
+import { Paper } from '../../atoms/Paper';
+import DesktopSearchBox from '../Search/DesktopSearchBox';
 
 export const DesktopMainHeader = () => {
 	return (
-		<Group
-			style={{
-				height: 72,
-			}}
-			spacing="medium"
-			alignItems="center"
-			horizontalPadding="large"
-		>
-			<Group spacing="medium" fillContainer>
-				<UnstyledButton>
-					<ArrowBackIcon />
-				</UnstyledButton>
-				<UnstyledButton>
-					<ArrowForwardIcon />
-				</UnstyledButton>
+		<Paper color="background">
+			<Group
+				style={{
+					height: 72,
+				}}
+				spacing="medium"
+				alignItems="center"
+				horizontalPadding="large"
+			>
+				<Group spacing="medium" fillContainer>
+					<UnstyledButton>
+						<ArrowBackIcon />
+					</UnstyledButton>
+					<UnstyledButton>
+						<ArrowForwardIcon />
+					</UnstyledButton>
 
-				<DesktopSearch />
-			</Group>
+					<DesktopSearchBox />
+				</Group>
 
-			<Group spacing="large">
-				<UnstyledButton>
-					<PaletteIcon />
-				</UnstyledButton>
-				<UnstyledButton>
-					<SettingsIcon />
-				</UnstyledButton>
+				<Group spacing="large">
+					{/* <UnstyledButton>
+						<PaletteIcon />
+					</UnstyledButton>
+					<UnstyledButton>
+						<SettingsIcon />
+					</UnstyledButton> */}
+				</Group>
 			</Group>
-		</Group>
+		</Paper>
 	);
 };
 
