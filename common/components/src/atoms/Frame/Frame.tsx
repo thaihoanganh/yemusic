@@ -1,5 +1,7 @@
 import { createElement } from 'react';
 
+import classNames from 'classnames';
+
 import {
 	frameAlignItemsVariants,
 	frameCornerRadiusVariants,
@@ -27,7 +29,8 @@ export const Frame = ({
 	...otherProps
 }: FrameProps) => {
 	return createElement(element, {
-		className: [
+		className: classNames(
+			frameOtherVariants.root,
 			alignItems && frameAlignItemsVariants[alignItems],
 			cornerRadius && frameCornerRadiusVariants[cornerRadius],
 			direction && frameDirectionVariants[direction],
@@ -37,10 +40,8 @@ export const Frame = ({
 			noWrap && frameOtherVariants.noWrap,
 			verticalPadding && frameVerticalPaddingVariants[verticalPadding],
 			spacing && frameSpacingVariants[spacing],
-			className,
-		]
-			.filter(Boolean)
-			.join(' '),
+			className
+		),
 		...otherProps,
 	});
 };

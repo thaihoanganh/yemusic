@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import classNames from 'classnames';
 
 import { createThemeVars } from '../../Theme/Theme.css';
 
@@ -62,7 +63,7 @@ export const StateLayer = ({ children, color, state }: StateLayerProps) => {
 			style={assignInlineVars({
 				[createThemeVars.stateLayerOpacity]: stateLayerOpacity,
 			})}
-			className={[color && stateLayerBackgroundVariants[color]].filter(Boolean).join(' ')}
+			className={classNames(color && stateLayerBackgroundVariants[color])}
 			onMouseEnter={() => handleToggleState('hover', true)}
 			onMouseLeave={() => handleToggleState('hover', false)}
 			onFocus={() => handleToggleState('focus', true)}
