@@ -14,6 +14,8 @@
 		"@types/react": "18.0.27",
 		"@types/react-dom": "18.0.10",
 		"@yemusic/components": "workspace:*",
+		"@yemusic/hooks": "workspace:*",
+		"@yemusic/services": "workspace:*",
 		"eslint-config-next": "13.1.6",
 		"next": "13.1.6",
 		"react": "18.2.0",
