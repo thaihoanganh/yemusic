@@ -9,13 +9,14 @@
 	],
 	"scripts": {
 		"build": "turbo run build",
-		"dev": "turbo run dev --parallel",
+		"dev": "dotenv -- turbo run dev --parallel",
 		"lint": "eslint . --ext .ts --ext .tsx --color",
 		"format": "eslint . --ext .ts --ext .tsx --color --fix"
 	},
 	"devDependencies": {
 		"@types/node": "^17.0.12",
 		"@yemusic/eslint-configs": "workspace:*",
+		"dotenv-cli": "^7.0.0",
 		"eslint": "^8.33.0",
 		"next": "13.1.6",
 		"prettier": "latest",
