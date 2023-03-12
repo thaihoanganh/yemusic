@@ -3,6 +3,7 @@ import {
 	DesktopMainHeader,
 	DesktopPlayerControls,
 	DesktopSidebar,
+	PlayerControlsProvider,
 	ThemeProvider,
 	useTheme,
 } from '@yemusic/components';

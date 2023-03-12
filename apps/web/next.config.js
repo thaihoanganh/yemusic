@@ -7,6 +7,9 @@ const withVanillaExtract = createVanillaExtractPlugin({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	transpilePackages: ['@yemusic/components'],
+	images: {
+		domains: ['i.ytimg.com'],
+	},
 };
 
 module.exports = withVanillaExtract(nextConfig);
