@@ -1,8 +1,8 @@
-import React, { PropsWithChildren, useRef } from 'react';
+import React, { PropsWithChildren } from 'react';
 
-import { Paper } from '../../atoms/Paper';
+import { useQueue } from '@yemusic/hooks';
 
-import { desktopLayoutStyles } from './DesktopLayout.css';
+import { desktopLayoutStyles, playerControlsHeight } from './DesktopLayout.css';
 
 export interface DesktopLayoutProps extends PropsWithChildren {
 	aside?: React.ReactNode;
@@ -12,24 +12,33 @@ export interface DesktopLayoutProps extends PropsWithChildren {
 }
 
 export const DesktopLayout = ({ aside, children, mainHeader, sidebar, playerControls }: DesktopLayoutProps) => {
-	const playerControlsRef = useRef<HTMLDivElement>(null);
+	const { nowPlayingTrackId, tracks } = useQueue();
+
+	const nowPlayingTrack = tracks.find(track => track.id === nowPlayingTrackId);
 
 	return (
-		<Paper color="background">
-			<div className={desktopLayoutStyles.root}>
-				<Paper className={desktopLayoutStyles.sidebar} color="primary" surfaceLevel={1}>
-					{sidebar}
-				</Paper>
-				<div className={desktopLayoutStyles.main}>
-					<div className={desktopLayoutStyles.mainHeader}>{mainHeader}</div>
-					{children}
-					<div className={desktopLayoutStyles.playerControls} ref={playerControlsRef}>
-						{playerControls}
-					</div>
+		<div className={desktopLayoutStyles.layout}>
+			<div className={desktopLayoutStyles.layoutRow}>
+				<div className={desktopLayoutStyles.layoutSidebarWrapper}>
+					<div className={desktopLayoutStyles.LayoutSidebar}>{sidebar}</div>
 				</div>
-				<div className={desktopLayoutStyles.aside}>{aside}</div>
+				<div
+					style={{
+						height: nowPlayingTrack ? `calc(100vh - ${playerControlsHeight}px)` : '100vh',
+					}}
+					className={desktopLayoutStyles.layoutMain}
+				>
+					<div className={desktopLayoutStyles.layoutMainHeader}>{mainHeader}</div>
+					<div className={desktopLayoutStyles.layoutMainContent}>{children}</div>
+				</div>
+				<div className={desktopLayoutStyles.layoutAside}>{aside}</div>
 			</div>
-		</Paper>
+			{nowPlayingTrack && (
+				<div className={desktopLayoutStyles.sidebarControlsWrapper}>
+					<div className={desktopLayoutStyles.sidebarControls}>{playerControls}</div>
+				</div>
+			)}
+		</div>
 	);
 };
 
