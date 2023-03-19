@@ -1,7 +1,13 @@
-import { Stack } from '@yemusic/components/src/atoms/Frame';
+import { Categories } from '@yemusic/components';
+import { CategoriesContext } from '@yemusic/providers';
+import React, { Fragment } from 'react';
 
-const index = () => {
-	return <Stack spacing="large" verticalPadding="medium" horizontalPadding="large"></Stack>;
+const HomePage = () => {
+	return (
+		<Fragment>
+			<Categories />
+		</Fragment>
+	);
 };
 
-export default index;
+export default HomePage;
