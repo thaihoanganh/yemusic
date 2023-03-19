@@ -4,6 +4,8 @@ import { themeVars } from '../../Theme/Theme.css';
 
 export const unstyledButtonVariants = styleVariants({
 	root: {
+		display: 'inline-flex',
+		alignItems: 'center',
 		background: 'none',
 		border: 'none',
 		padding: 0,
