@@ -1,88 +1,80 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { usePlayerControls, useQueue, useSearch } from '@yemusic/hooks';
-import { trackService } from '@yemusic/services/v1';
+import { useCallback, useContext, useMemo } from 'react';
+
+import {
+	onAddTrackIdToQueueIds,
+	onSetCurrentTrackId,
+	onTogglePlaying,
+	PlayerControlsContext,
+	QueueContext,
+	SearchContext,
+	TracksContext,
+} from '@yemusic/providers';
 
 import { Group, Stack } from '../../atoms/Frame';
 import { LoadingLayer, LoadingLayerProvider } from '../../atoms/LoadingLayer';
 import Typography from '../../atoms/Typography/Typography';
 import { Track } from '../Track';
 
-export interface DesktopSearchResultsProps {
-	isLoading?: boolean;
-}
+export const DesktopSearchResults = () => {
+	const tracks = useContext(TracksContext.initial);
+	const { isSearching, searchResultsIds } = useContext(SearchContext.initial);
+	const { currentTrackId } = useContext(QueueContext.initial);
+	const { isPlaying } = useContext(PlayerControlsContext.initial);
 
-export const DesktopSearchResults = ({ isLoading }: DesktopSearchResultsProps) => {
-	const { isSearching, searchResults } = useSearch();
-	const { nowPlayingTrackId, onAddTrack, setNowPlayingTrackId, onUpdateTrack } = useQueue();
-	const { isPlaying, setAudioUrl, setDuration, setIsPlaying } = usePlayerControls();
+	const searchResults = useMemo(() => {
+		return tracks.filter(track => searchResultsIds.includes(track.id));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [searchResultsIds]);
 
-	const handleClickTrack = ({ trackIndex }: { trackIndex: number }) => {
-		const trackSelected = searchResults[trackIndex];
-
-		setDuration({
-			duration: trackSelected.duration,
+	const handleClickTrack = useCallback(({ trackId }: { trackId: string }) => {
+		onTogglePlaying({
+			isPlaying: false,
 		});
-
-		onAddTrack({
-			track: {
-				id: trackSelected.id,
-				author: trackSelected.author,
-				title: trackSelected.title,
-				thumbnail: trackSelected.thumbnail,
-				duration: trackSelected.duration,
-				audioUrl: '',
-				isLiked: false,
-				isLoadingAudio: true,
-				isPlayed: false,
-			},
+		onAddTrackIdToQueueIds({
+			trackId,
 		});
-
-		setNowPlayingTrackId({ trackId: trackSelected.id });
-
-		trackService.getTracKInfo({ trackId: trackSelected.id }).then((res: any) => {
-			onUpdateTrack({
-				trackId: trackSelected.id,
-				updateData: {
-					audioUrl: res.data.formats.url,
-					isLoadingAudio: false,
-				},
-			});
-
-			setAudioUrl({
-				audioUrl: res.data.formats.url,
-			});
-
-			setIsPlaying({
-				isPlaying: true,
-			});
+		onSetCurrentTrackId({
+			trackId,
 		});
-	};
+	}, []);
 
 	return (
-		<LoadingLayerProvider isLoading={isLoading}>
+		<LoadingLayerProvider isLoading={isSearching}>
 			<Stack spacing="medium" horizontalPadding="large" verticalPadding="large">
 				<Stack spacing="small">
 					<Group>
 						<LoadingLayer loading="inherit">
-							<Typography variant="title">kết quả tìm kiếm</Typography>
+							<Typography variant="title">
+								{isSearching || searchResults.length > 0 ? 'kết quả tìm kiếm' : null}
+							</Typography>
 						</LoadingLayer>
 					</Group>
 
 					<Stack>
 						{isSearching
-							? Array.from({ length: 10 }).map((_, index) => (
-									<Track key={index} isLoading artist="" nowPlaying={false} isPlaying={false} title="" thumbnail="" />
+							? Array.from({
+									length: 20,
+							  }).map((_, index) => (
+									<div
+										key={index}
+										style={{
+											pointerEvents: 'none',
+										}}
+									>
+										<Track trackId="" title="loading" author="loading" nowPlaying={false} isPlaying={false} />
+									</div>
 							  ))
-							: searchResults.map((result, index) => (
+							: searchResults.map(result => (
 									<Track
 										key={result.id}
-										artist={result.author}
+										author={result.author}
 										duration={String(result.duration)}
-										nowPlaying={nowPlayingTrackId === result.id}
-										isPlaying={nowPlayingTrackId === result.id && isPlaying}
+										nowPlaying={result.id === currentTrackId}
+										isPlaying={result.id === currentTrackId && isPlaying}
+										trackId={result.id}
 										title={result.title}
 										thumbnail={result.thumbnail}
-										onTogglePlay={() => handleClickTrack({ trackIndex: index })}
+										onTogglePlaying={() => handleClickTrack({ trackId: result.id })}
 									/>
 							  ))}
 					</Stack>
