@@ -1,44 +1,79 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import { sliderStyles } from './Slider.css';
 
-export type SliderProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+export interface SliderProps extends React.InputHTMLAttributes<HTMLInputElement> {
+	onUpdateValue?: (value: number) => void;
+}
 
-export const Slider = ({ defaultValue = 0, max, min, value, onChange, ...otherProps }: SliderProps) => {
+let isDragging = false;
+
+export const Slider = ({ max, min, value, onChange, onUpdateValue, ...otherProps }: SliderProps) => {
+	const sliderInputRef = useRef<HTMLInputElement | null>(null);
 	const sliderValueRef = useRef<HTMLDivElement | null>(null);
 
+	const [inputValue, setInputValue] = useState(value);
+
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (onChange) onChange(e);
+		if (onChange) {
+			onChange(e);
+		}
+
+		const value = e.target.valueAsNumber;
+
+		if (onUpdateValue && !isDragging) {
+			onUpdateValue(value);
+		}
 
 		if (sliderValueRef.current && typeof max === 'number') {
-			const value = (e.target as any).value;
-			(sliderValueRef.current as any).style.width = `${(value / max) * 100}%`;
+			sliderValueRef.current.style.width = `${(value / max) * 100}%`;
+		}
+
+		setInputValue(value);
+	};
+
+	const handleDraggingStop = () => {
+		isDragging = false;
+
+		if (sliderInputRef.current && onUpdateValue) {
+			onUpdateValue(sliderInputRef.current.valueAsNumber);
+			setInputValue(sliderInputRef.current.valueAsNumber);
 		}
 	};
 
-	const setSliderValueRef = useCallback((node: HTMLDivElement) => {
-		if (node) {
-			sliderValueRef.current = node;
+	const setSliderValueRef = useCallback(
+		(node: HTMLDivElement) => {
+			if (node) {
+				sliderValueRef.current = node;
 
-			if (sliderValueRef.current && typeof max === 'number' && typeof value === 'number') {
-				(sliderValueRef.current as any).style.width = `${(value / max) * 100}%`;
+				if (sliderInputRef.current && typeof max === 'number') {
+					sliderValueRef.current.style.width = `${(sliderInputRef.current.valueAsNumber / max) * 100}%`;
+				}
 			}
-		}
+
+			if (!isDragging) {
+				setInputValue(value);
+			}
+		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+		[value]
+	);
 
 	return (
 		<label className={sliderStyles.wrapper}>
 			<input
+				ref={sliderInputRef}
 				className={sliderStyles.sliderInput}
 				type="range"
+				step={1}
 				min={min}
 				max={max}
-				value={value}
-				defaultValue={defaultValue}
+				value={inputValue}
 				onChange={handleChange}
-				onInput={handleChange}
+				onMouseDown={() => {
+					isDragging = true;
+				}}
+				onMouseUp={handleDraggingStop}
 				{...otherProps}
 			/>
 			<div className={sliderStyles.sliderValue} ref={setSliderValueRef} />

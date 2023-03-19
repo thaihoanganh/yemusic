@@ -19,19 +19,19 @@ export const sliderStyles = styleVariants({
 		height: 4,
 		margin: 0,
 		borderRadius: 999,
-		background: themeVars.palette['outline-variant'],
+		background: themeVars.palette['outline-variant-dynamic'],
 		transition: 'background-color 0.2s ease-in-out',
 		'::-webkit-slider-thumb': {
 			appearance: 'none',
 			width: 0,
 			height: 0,
-			background: themeVars.palette['primary'],
+			background: themeVars.palette['primary-dynamic'],
 			cursor: 'pointer',
 		},
 		'::-moz-range-thumb': {
 			width: 0,
 			height: 0,
-			background: themeVars.palette['primary'],
+			background: themeVars.palette['primary-dynamic'],
 			cursor: 'pointer',
 		},
 		selectors: {
@@ -49,7 +49,7 @@ export const sliderStyles = styleVariants({
 	},
 	sliderValue: {
 		position: 'absolute',
-		background: themeVars.palette['primary'],
+		background: themeVars.palette['primary-dynamic'],
 		height: 4,
 		borderRadius: 999,
 		pointerEvents: 'none',
