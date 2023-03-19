@@ -1,28 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { styleVariants } from '@vanilla-extract/css';
 
-import { createThemeVars, themeVars } from '../../Theme/Theme.css';
+import { themeVars } from '../../Theme/Theme.css';
 
 export const trackStyles = styleVariants({
-	loading: {
-		visibility: 'hidden',
-		pointerEvents: 'none',
-	},
-	loadingWrapper: {
-		vars: {
-			[createThemeVars.stateLayerOpacity]: 0.045,
-		} as any,
-		position: 'relative',
-		borderRadius: themeVars.spacing.xsmall,
-		background: themeVars.palette.background,
-		':before': {
-			content: '""',
-			position: 'absolute',
-			inset: 0,
-			borderRadius: themeVars.spacing.xsmall,
-			background: themeVars.palette.secondary,
-		},
-	},
 	image: {
 		position: 'relative',
 		width: 80,
@@ -61,6 +41,7 @@ export const trackStyles = styleVariants({
 	},
 	actions: {
 		display: 'flex',
+		alignItems: 'center',
 		justifyContent: 'flex-end',
 		gap: themeVars.spacing.small,
 		width: 64,
@@ -69,5 +50,26 @@ export const trackStyles = styleVariants({
 		width: 64,
 		minWidth: 64,
 		textAlign: 'right',
+	},
+});
+
+export const trackMenuStyles = styleVariants({
+	modal: {
+		position: 'fixed',
+		zIndex: 9,
+		inset: 0,
+	},
+	modalMask: {
+		position: 'absolute',
+		inset: 0,
+	},
+	modalMenu: {
+		overflow: 'hidden',
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		border: `1px solid ${themeVars.palette['outline-variant']}`,
+		borderRadius: 4,
+		background: themeVars.palette.surface,
 	},
 });

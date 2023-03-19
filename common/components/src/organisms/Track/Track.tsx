@@ -3,7 +3,7 @@ import { cloneElement } from 'react';
 import Image from 'next/image';
 
 import { UnstyledButton } from '../../atoms/Button';
-import Frame, { Group } from '../../atoms/Frame';
+import Frame, { Group, Stack } from '../../atoms/Frame';
 import {
 	FavoriteFillIcon,
 	FavoriteIcon,
@@ -11,24 +11,24 @@ import {
 	PauseCircleFillIcon,
 	PlayCircleFillIcon,
 } from '../../atoms/Icons';
+import { LoadingLayer } from '../../atoms/LoadingLayer';
 import { Paper } from '../../atoms/Paper';
 import { StateLayer } from '../../atoms/StateLayer';
 import Typography from '../../atoms/Typography/Typography';
 
+import { useTrack } from './hooks';
 import { trackStyles } from './Track.css';
 
 export interface TrackProps {
-	artist: string;
+	author: string;
 	duration?: string;
-	isLoading?: boolean;
 	isLiked?: boolean;
 	isPlaying: boolean;
 	nowPlaying?: boolean;
-	thumbnail: string;
+	trackId: string;
+	thumbnail?: string;
 	title: string;
-	onClickFavorite?: () => void;
-	onClickMore?: () => void;
-	onTogglePlay?: () => void;
+	onTogglePlaying?: () => void;
 }
 
 const timeFormat = (time: number) => {
@@ -39,111 +39,169 @@ const timeFormat = (time: number) => {
 };
 
 export const Track = ({
-	artist,
+	author,
 	duration,
-	isLoading,
 	isLiked,
 	isPlaying,
 	title,
 	nowPlaying,
-	thumbnail,
-	onClickFavorite,
-	onClickMore,
-	onTogglePlay,
+	trackId,
+	thumbnail = '',
+	onTogglePlaying,
 }: TrackProps) => {
-	const loadingWrapperClassName = isLoading ? trackStyles.loadingWrapper : undefined;
-	const loadingClassName = isLoading ? trackStyles.loading : undefined;
+	const { setIsOpenMenu } = useTrack();
+
+	const handleClickMore = (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.stopPropagation();
+
+		setIsOpenMenu({
+			trackId,
+			isOpenMenu: true,
+			position: {
+				x: event.clientX,
+				y: event.clientY,
+			},
+		});
+	};
+
+	const handleClickContextMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault();
+
+		setIsOpenMenu({
+			trackId,
+			isOpenMenu: true,
+			position: {
+				x: event.clientX,
+				y: event.clientY,
+			},
+		});
+	};
 
 	return (
-		<Frame
-			style={{
-				pointerEvents: isLoading ? 'none' : 'initial',
-			}}
-			cornerRadius="small"
-		>
+		<Frame cornerRadius="small" role="button" onContextMenu={handleClickContextMenu}>
 			<StateLayer color="primary-container" state={['hover']}>
 				{({ isHover }) => (
-					<Paper color={nowPlaying ? 'primary-container' : undefined}>
+					<Paper color={nowPlaying ? 'primary-container-dynamic' : undefined} surfaceLevel={5}>
 						<Group spacing="small" alignItems="center" verticalPadding="xsmall" horizontalPadding="xsmall">
-							<div className={loadingWrapperClassName}>
-								<div className={loadingClassName}>
-									<Group alignItems="center">
-										<UnstyledButton className={trackStyles.imageWrapper} onClick={onTogglePlay}>
-											<div
-												style={{
-													transform: isHover ? 'scale(1.05)' : 'scale(1)',
-												}}
-												className={trackStyles.image}
-											>
-												<Image src={thumbnail} alt={title} fill quality={100} />
-											</div>
-											<div className={trackStyles.imageOverlay}>
-												{cloneElement(isPlaying ? <PauseCircleFillIcon /> : <PlayCircleFillIcon />, {
-													style: {
-														opacity: nowPlaying || isHover ? 1 : 0,
-														transform: nowPlaying || isHover ? 'scale(1)' : 'scale(0.95)',
-														transition: 'transform 0.45s',
-													},
-													size: 'large',
-													color: 'on-primary-container',
-												})}
-											</div>
-										</UnstyledButton>
-									</Group>
-								</div>
-							</div>
+							<LoadingLayer loading="inherit">
+								<Group alignItems="center">
+									<UnstyledButton className={trackStyles.imageWrapper} onClick={onTogglePlaying}>
+										<div
+											style={{
+												transform: isHover ? 'scale(1.05)' : 'scale(1)',
+											}}
+											className={trackStyles.image}
+										>
+											<Image src={thumbnail} alt={title} fill quality={100} />
+										</div>
+										<div className={trackStyles.imageOverlay}>
+											{cloneElement(isPlaying ? <PauseCircleFillIcon /> : <PlayCircleFillIcon />, {
+												style: {
+													opacity: nowPlaying || isHover ? 1 : 0,
+													transform: nowPlaying || isHover ? 'scale(1)' : 'scale(0.95)',
+													transition: 'transform 0.45s',
+												},
+												size: 'large',
+												color: nowPlaying ? 'on-primary-container-dynamic' : 'on-primary-container',
+											})}
+										</div>
+									</UnstyledButton>
+								</Group>
+							</LoadingLayer>
 
-							<div className={trackStyles.description}>
-								<div className={loadingWrapperClassName}>
-									<div className={loadingClassName}>
-										<Typography
-											variant="body"
-											color={isHover || nowPlaying ? 'on-primary-container' : 'on-surface-variant'}
-											truncate
-										>
-											{title || '\u00A0'}
-										</Typography>
-									</div>
-								</div>
-								<div className={loadingWrapperClassName}>
-									<div className={loadingClassName}>
-										<Typography
-											variant="body"
-											color={isHover || nowPlaying ? 'on-primary-container' : 'on-surface-variant'}
-											size="small"
-											truncate
-										>
-											{artist || '\u00A0'}
-										</Typography>
-									</div>
-								</div>
-							</div>
+							<Stack spacing="xsmall" fillContainer>
+								<LoadingLayer loading="inherit">
+									<Typography
+										variant="body"
+										color={
+											nowPlaying ? 'on-primary-container-dynamic' : isHover ? 'on-primary-container' : 'on-surface'
+										}
+										truncate
+									>
+										{title}
+									</Typography>
+								</LoadingLayer>
+
+								<LoadingLayer loading="inherit">
+									<Typography
+										variant="body"
+										color={
+											nowPlaying
+												? 'on-primary-container-dynamic'
+												: isHover
+												? 'on-primary-container'
+												: 'on-surface-variant'
+										}
+										size="small"
+										truncate
+									>
+										{author}
+									</Typography>
+								</LoadingLayer>
+							</Stack>
 
 							{isHover && (
-								<div className={trackStyles.actions}>
-									<UnstyledButton onClick={onClickFavorite}>
-										{isLiked ? (
-											<FavoriteIcon color="on-primary-container" size="small" />
-										) : (
-											<FavoriteFillIcon color="on-primary-container" size="small" />
-										)}
-									</UnstyledButton>
-									<UnstyledButton onClick={onClickMore}>
-										<MoreHorizIcon color="on-primary-container" size="small" />
-									</UnstyledButton>
-								</div>
+								<LoadingLayer loading="inherit">
+									<div className={trackStyles.actions}>
+										<UnstyledButton>
+											{isLiked ? (
+												<FavoriteIcon
+													color={
+														nowPlaying
+															? 'on-primary-container-dynamic'
+															: isHover
+															? 'on-primary-container'
+															: 'on-surface-variant'
+													}
+													size="small"
+												/>
+											) : (
+												<FavoriteFillIcon
+													color={
+														nowPlaying
+															? 'on-primary-container-dynamic'
+															: isHover
+															? 'on-primary-container'
+															: 'on-surface-variant'
+													}
+													size="small"
+												/>
+											)}
+										</UnstyledButton>
+										<UnstyledButton onClick={handleClickMore}>
+											<MoreHorizIcon
+												color={
+													nowPlaying
+														? 'on-primary-container-dynamic'
+														: isHover
+														? 'on-primary-container'
+														: 'on-surface-variant'
+												}
+												size="small"
+											/>
+										</UnstyledButton>
+									</div>
+								</LoadingLayer>
 							)}
 
 							{!isHover && duration && (
-								<div className={loadingWrapperClassName}>
-									<div className={loadingClassName}>
-										<div className={trackStyles.duration}>
-											<Typography variant="label" size="small" color="on-surface-variant">
-												{timeFormat(Number(duration)) || '\u00A0'}
-											</Typography>
-										</div>
+								<LoadingLayer loading="inherit">
+									<div className={trackStyles.duration}>
+										<Typography
+											variant="label"
+											size="small"
+											color={
+												nowPlaying
+													? 'on-primary-container-dynamic'
+													: isHover
+													? 'on-primary-container'
+													: 'on-surface-variant'
+											}
+										>
+											{timeFormat(Number(duration)) || '\u00A0'}
+										</Typography>
 									</div>
-								</div>
+								</LoadingLayer>
 							)}
 						</Group>
 					</Paper>

@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { Fragment, PropsWithChildren } from 'react';
 
-const TrackProvider = () => {
-	return <div>TrackProvider</div>;
+import TrackMenu from './TrackMenu';
+
+export const TrackProvider = ({ children }: PropsWithChildren) => {
+	return (
+		<Fragment>
+			{children}
+			<TrackMenu />
+		</Fragment>
+	);
 };
 
 export default TrackProvider;
