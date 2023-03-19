@@ -14,6 +14,7 @@
 		"@material/material-color-utilities": "^0.2.0",
 		"@vanilla-extract/dynamic": "^2.0.3",
 		"@yemusic/hooks": "workspace:*",
+		"@yemusic/providers": "workspace:*",
 		"@yemusic/services": "workspace:*",
 		"framer-motion": "^10.0.0",
 		"next": "13.1.6",
