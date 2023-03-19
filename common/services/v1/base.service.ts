@@ -7,7 +7,7 @@ export class BaseService {
 		const httpClient = new Http();
 
 		httpClient.setCustomConfigs({
-			baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+			baseUrl: 'https://api.yemusic.app/v1',
 		});
 
 		this.httpClient = httpClient;

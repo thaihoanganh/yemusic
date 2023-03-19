@@ -1,2 +1,2 @@
-export * from './track.service';
-export * from './search.service';
+export * from './track';
+export * from './search';
