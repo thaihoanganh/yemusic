@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Fragment, useCallback, useRef } from 'react';
+import { Fragment } from 'react';
 
-import { usePlayerControls, useQueue } from '@yemusic/hooks';
+import Image from 'next/image';
 
 import { UnstyledButton } from '../../atoms/Button';
 import { Group, Stack } from '../../atoms/Frame';
@@ -10,216 +9,144 @@ import {
 	FavoriteIcon,
 	PauseCircleFillIcon,
 	PlayCircleFillIcon,
-	QueueMusicIcon,
 	RepeatIcon,
 	RepeatOneIcon,
 	ShuffleIcon,
 	SkipNextIcon,
 	SkipPreviousIcon,
-	VolumeUpIcon,
+	VolumeDownAltIcon,
 } from '../../atoms/Icons';
 import { Slider } from '../../atoms/Slider';
-import { StateLayer } from '../../atoms/StateLayer';
 import Typography from '../../atoms/Typography/Typography';
 
-const timeFormat = (time: number) => {
+import { desktopPlayerControlsStyles } from './DesktopPlayerControls.css';
+import { usePlayerControls } from './hooks';
+
+const formatTime = (time: number) => {
 	const minutes = Math.floor(time / 60);
-	const seconds = Math.floor(time - minutes * 60);
+	const seconds = Math.floor(time % 60);
 
 	return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
 };
 
 export const DesktopPlayerControls = () => {
-	const audioRef = useRef<null | HTMLAudioElement>(null);
-
-	const { audioUrl, duration, currentTime, isPlaying, setIsPlaying, setCurrentTime } = usePlayerControls();
-	const { isShuffle, repeatMode, setRepeatMode, setShuffle } = useQueue();
-
-	const handleToggleSetRepeatMode = useCallback(() => {
-		switch (repeatMode) {
-			case 'none':
-				setRepeatMode({ repeatMode: 'all' });
-				break;
-			case 'all':
-				setRepeatMode({ repeatMode: 'one' });
-				break;
-			case 'one':
-				setRepeatMode({ repeatMode: 'none' });
-				break;
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [repeatMode]);
-
-	const handleTogglePlaying = useCallback(
-		(isPlaying: boolean) => {
-			if (audioRef.current) {
-				setIsPlaying({ isPlaying });
-
-				if (isPlaying) {
-					(audioRef.current as any).play();
-				} else {
-					(audioRef.current as any).pause();
-				}
-			}
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
-	);
-
-	const handleChangeCurrentTime = useCallback((currentTime: number) => {
-		if (audioRef.current) {
-			(audioRef.current as any).currentTime = currentTime;
-			setCurrentTime({ currentTime });
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	const {
+		thumbnailRef,
+		trackNowPlaying,
+		duration,
+		volume,
+		currentTime,
+		isPlaying,
+		isShuffling,
+		repeatMode,
+		handleAudioControls,
+		handleUpdateCurrentTime,
+		handlePlayerEnded,
+		handleChangeCurrentTime,
+		handleTogglePlaying,
+		handleSkipToNextTrack,
+		handleSkipToPreviousTrack,
+		handleToggleShuffling,
+		handleToggleRepeatMode,
+		handleChangeVolume,
+	} = usePlayerControls();
 
 	return (
 		<Fragment>
-			<Stack
-				style={{
-					height: '100%',
-				}}
-				spacing="medium"
-				justifyContent="center"
-				horizontalPadding="large"
-			>
-				<Group>
+			<audio
+				ref={handleAudioControls}
+				src={trackNowPlaying?.audioUrl}
+				loop={repeatMode === 'one'}
+				onPause={() => handleTogglePlaying(false)}
+				onPlay={() => handleTogglePlaying(true)}
+				onEnded={handlePlayerEnded}
+				onTimeUpdate={e => handleUpdateCurrentTime((e.target as HTMLAudioElement).currentTime)}
+			/>
+			<div className={desktopPlayerControlsStyles.root}>
+				<div className={desktopPlayerControlsStyles.trackInfo}>
+					<div className={desktopPlayerControlsStyles.thumnbailWrapper}>
+						<Image
+							ref={thumbnailRef}
+							className={desktopPlayerControlsStyles.thumbnail}
+							src={trackNowPlaying?.thumbnail || ''}
+							alt=""
+							fill
+						/>
+					</div>
+
+					<Stack spacing="xsmall" justifyContent="center" fillContainer>
+						<Typography variant="body" color="on-surface-variant-dynamic" truncate>
+							{trackNowPlaying?.title}
+						</Typography>
+						<Typography variant="body" size="small" color="on-surface-variant-dynamic" truncate>
+							{trackNowPlaying?.author}
+						</Typography>
+					</Stack>
 					<Group
 						style={{
-							width: '20%',
-							minWidth: '20%',
+							width: 40,
+							minWidth: 40,
 						}}
-						spacing="small"
-						justifyContent="flex-start"
-						alignItems="center"
+						justifyContent="center"
 					>
-						<StateLayer state={['pressed']}>
-							{({ isPressed }) => (
-								<UnstyledButton>
-									<FavoriteIcon
-										style={{
-											transform: isPressed ? 'scale(1.2)' : 'scale(1)',
-											transition: 'transform 0.2s',
-										}}
-										color="on-surface-variant"
-									/>
-								</UnstyledButton>
-							)}
-						</StateLayer>
 						<UnstyledButton>
-							<DownloadIcon color="on-surface-variant" />
+							<FavoriteIcon size="medium" color="on-surface-variant-dynamic" />
 						</UnstyledButton>
 					</Group>
+				</div>
 
-					<Group spacing="small" justifyContent="center" alignItems="center" fillContainer>
-						<UnstyledButton
-							onClick={() =>
-								setShuffle({
-									isShuffle: !isShuffle,
-								})
-							}
-						>
-							<ShuffleIcon color={isShuffle ? 'primary' : 'on-surface-variant'} />
+				<div className={desktopPlayerControlsStyles.trackControls}>
+					<Group spacing="medium" justifyContent="center">
+						<UnstyledButton onClick={handleToggleShuffling}>
+							<ShuffleIcon size="medium" color={isShuffling ? 'primary-dynamic' : 'on-surface-variant-dynamic'} />
 						</UnstyledButton>
-						<UnstyledButton>
-							<SkipPreviousIcon size="large" color="on-surface-variant" />
+						<UnstyledButton onClick={handleSkipToPreviousTrack}>
+							<SkipPreviousIcon size="large" color="on-surface-variant-dynamic" />
 						</UnstyledButton>
 						<UnstyledButton onClick={() => handleTogglePlaying(!isPlaying)}>
 							{isPlaying ? (
-								<PauseCircleFillIcon size="xlarge" color="primary" />
+								<PauseCircleFillIcon size="xlarge" color="primary-dynamic" />
 							) : (
-								<PlayCircleFillIcon size="xlarge" color="primary" />
+								<PlayCircleFillIcon size="xlarge" color="primary-dynamic" />
 							)}
 						</UnstyledButton>
-						<UnstyledButton>
-							<SkipNextIcon size="large" color="on-surface-variant" />
+						<UnstyledButton onClick={handleSkipToNextTrack}>
+							<SkipNextIcon size="large" color="on-surface-variant-dynamic" />
 						</UnstyledButton>
-						<UnstyledButton onClick={handleToggleSetRepeatMode}>
-							{repeatMode === 'none' && <RepeatIcon color="on-surface-variant" />}
-							{repeatMode === 'all' && <RepeatIcon color="primary" />}
-							{repeatMode === 'one' && <RepeatOneIcon color="primary" />}
+						<UnstyledButton onClick={handleToggleRepeatMode}>
+							{repeatMode === 'none' && <RepeatIcon size="medium" color="on-surface-variant-dynamic" />}
+							{repeatMode === 'one' && <RepeatOneIcon size="medium" color="primary-dynamic" />}
+							{repeatMode === 'all' && <RepeatIcon size="medium" color="primary-dynamic" />}
 						</UnstyledButton>
 					</Group>
 
-					<Group
-						style={{
-							width: '20%',
-							minWidth: '20%',
-						}}
-						spacing="small"
-						justifyContent="flex-end"
-						alignItems="center"
-					>
-						<StateLayer state={['hover']}>
-							{({ isHover }) => (
-								<Group alignItems="center" spacing="xsmall">
-									<UnstyledButton>
-										<VolumeUpIcon color="on-surface-variant" />
-									</UnstyledButton>
-									<div
-										style={{
-											overflow: 'hidden',
-											width: isHover ? 80 : 80,
-											paddingBottom: 4,
-											transition: 'width 0.5s',
-										}}
-									>
-										<Slider max={100} step={0} />
-									</div>
-								</Group>
-							)}
-						</StateLayer>
-						<UnstyledButton>
-							<QueueMusicIcon color="on-surface-variant" />
-						</UnstyledButton>
-					</Group>
-				</Group>
-
-				<Group>
-					<Group
-						style={{
-							width: 36,
-						}}
-						justifyContent="flex-start"
-					>
-						<Typography variant="body" size="small" color="on-surface-variant">
-							{timeFormat(currentTime)}
+					<Group spacing="xsmall" alignItems="center">
+						<Typography variant="label" size="small" color="on-surface-variant-dynamic">
+							{formatTime(currentTime)}
+						</Typography>
+						<Slider min={0} max={duration} value={currentTime} onUpdateValue={handleChangeCurrentTime} />
+						<Typography variant="label" size="small" color="on-surface-variant-dynamic">
+							{formatTime(duration)}
 						</Typography>
 					</Group>
-					<Group alignItems="center" fillContainer>
+				</div>
+
+				<div className={desktopPlayerControlsStyles.trackMore}>
+					<UnstyledButton>
+						<DownloadIcon size="medium" color="on-surface-variant-dynamic" />
+					</UnstyledButton>
+					<Group alignItems="center">
+						<VolumeDownAltIcon size="large" color="on-surface-variant-dynamic" />
 						<Slider
-							key={currentTime}
 							min={0}
-							max={duration}
-							value={currentTime}
-							onChange={(e: any) => handleChangeCurrentTime(e.target.value)}
+							max={1}
+							step={0.05}
+							defaultValue={volume}
+							onChange={e => handleChangeVolume(e.target.valueAsNumber)}
 						/>
 					</Group>
-					<Group
-						style={{
-							width: 36,
-						}}
-						justifyContent="flex-end"
-					>
-						<Typography variant="body" size="small" color="on-surface-variant">
-							{timeFormat(duration)}
-						</Typography>
-					</Group>
-				</Group>
-			</Stack>
-
-			<audio
-				ref={audioRef}
-				src={audioUrl}
-				autoPlay
-				loop={repeatMode === 'one'}
-				onTimeUpdate={(e: any) =>
-					setCurrentTime({
-						currentTime: e.target.currentTime,
-					})
-				}
-			/>
+				</div>
+			</div>
 		</Fragment>
 	);
 };
