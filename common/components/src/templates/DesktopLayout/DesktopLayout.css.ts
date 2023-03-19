@@ -3,8 +3,8 @@ import { styleVariants } from '@vanilla-extract/css';
 import { createThemeVars, themeVars } from '../../Theme/Theme.css';
 
 export const sidebarWidth = 280;
-export const asideWidth = 0;
-export const playerControlsHeight = 110;
+export const asideWidth = 360;
+export const playerControlsHeight = 100;
 
 export const desktopLayoutStyles = styleVariants({
 	layout: {
@@ -36,7 +36,6 @@ export const desktopLayoutStyles = styleVariants({
 		overflowY: 'auto',
 		flexGrow: 1,
 		position: 'relative',
-		width: `calc(100% - ${sidebarWidth}px - ${asideWidth}px)`,
 		height: '80vh',
 		'::-webkit-scrollbar': {
 			width: 8,
@@ -63,17 +62,16 @@ export const desktopLayoutStyles = styleVariants({
 	},
 	layoutMainContent: {},
 	layoutAside: {
-		width: asideWidth,
-		minWidth: asideWidth,
+		borderLeft: `1px solid ${themeVars.palette['outline-variant']}`,
 	},
 	sidebarControlsWrapper: {
 		vars: {
-			[createThemeVars.stateLayerOpacity]: '0.08',
+			[createThemeVars.stateLayerOpacity]: '0.06',
 		},
 		height: playerControlsHeight,
 		minHeight: playerControlsHeight,
 		borderTop: `1px solid ${themeVars.palette['outline']}`,
-		background: themeVars.palette.primary,
+		background: themeVars.palette['primary-dynamic'],
 	},
 	sidebarControls: {
 		vars: {

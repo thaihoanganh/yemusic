@@ -5,6 +5,7 @@ import {
 	greenFromArgb,
 	redFromArgb,
 	themeFromSourceColor,
+	themeFromImage,
 } from '@material/material-color-utilities';
 import { create } from 'zustand';
 
@@ -13,6 +14,7 @@ import { themeConfigs } from './theme.config';
 interface UseTheme {
 	theme: typeof themeConfigs;
 	onSetThemeFromSourceColor: ({ primaryColor, dynamicColor }: { primaryColor: string; dynamicColor: string }) => void;
+	onSetDynamicThemeFromImage: ({ image }: { image: HTMLImageElement }) => void;
 }
 
 function convertColorName(colorName: string) {
@@ -50,6 +52,24 @@ export const useTheme = create<UseTheme>(set => ({
 				palette: {
 					...newPalette,
 					...newDynamicPalette,
+				},
+			},
+		}));
+	},
+	onSetDynamicThemeFromImage: async ({ image }) => {
+		const { schemes } = await themeFromImage(image);
+
+		const newPalette = createPaletteFromSchemes({
+			schemes,
+			isDynamic: true,
+		});
+
+		set(prevState => ({
+			theme: {
+				...prevState.theme,
+				palette: {
+					...prevState.theme.palette,
+					...newPalette,
 				},
 			},
 		}));

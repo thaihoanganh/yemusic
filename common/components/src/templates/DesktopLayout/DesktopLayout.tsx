@@ -1,8 +1,8 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useContext } from 'react';
 
-import { useQueue } from '@yemusic/hooks';
+import { QueueContext } from '@yemusic/providers';
 
-import { desktopLayoutStyles, playerControlsHeight } from './DesktopLayout.css';
+import { asideWidth, desktopLayoutStyles, playerControlsHeight } from './DesktopLayout.css';
 
 export interface DesktopLayoutProps extends PropsWithChildren {
 	aside?: React.ReactNode;
@@ -12,9 +12,7 @@ export interface DesktopLayoutProps extends PropsWithChildren {
 }
 
 export const DesktopLayout = ({ aside, children, mainHeader, sidebar, playerControls }: DesktopLayoutProps) => {
-	const { nowPlayingTrackId, tracks } = useQueue();
-
-	const nowPlayingTrack = tracks.find(track => track.id === nowPlayingTrackId);
+	const { currentTrackId } = useContext(QueueContext.initial);
 
 	return (
 		<div className={desktopLayoutStyles.layout}>
@@ -24,16 +22,24 @@ export const DesktopLayout = ({ aside, children, mainHeader, sidebar, playerCont
 				</div>
 				<div
 					style={{
-						height: nowPlayingTrack ? `calc(100vh - ${playerControlsHeight}px)` : '100vh',
+						height: currentTrackId ? `calc(100vh - ${playerControlsHeight}px)` : '100vh',
 					}}
 					className={desktopLayoutStyles.layoutMain}
 				>
 					<div className={desktopLayoutStyles.layoutMainHeader}>{mainHeader}</div>
 					<div className={desktopLayoutStyles.layoutMainContent}>{children}</div>
 				</div>
-				<div className={desktopLayoutStyles.layoutAside}>{aside}</div>
+				<div
+					style={{
+						width: currentTrackId ? asideWidth : 0,
+						minWidth: currentTrackId ? asideWidth : 0,
+					}}
+					className={desktopLayoutStyles.layoutAside}
+				>
+					{aside}
+				</div>
 			</div>
-			{nowPlayingTrack && (
+			{currentTrackId && (
 				<div className={desktopLayoutStyles.sidebarControlsWrapper}>
 					<div className={desktopLayoutStyles.sidebarControls}>{playerControls}</div>
 				</div>
