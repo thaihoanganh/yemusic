@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 
-import createAppContext from '../createAppProvider';
+import createSingletonAppContext from '../createAppProvider';
 
 import { SearchEntity } from './entity';
 
@@ -10,7 +10,7 @@ export const initialSearchState: SearchEntity = {
 	searchResultsIds: [],
 };
 
-export const SearchContext = createAppContext<SearchEntity>(initialSearchState);
+export const SearchContext = createSingletonAppContext<SearchEntity>(initialSearchState);
 
 export const SearchProvider = ({ children }: PropsWithChildren) => {
 	return <SearchContext.Provider>{children}</SearchContext.Provider>;

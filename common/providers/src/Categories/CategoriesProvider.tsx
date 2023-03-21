@@ -2,7 +2,7 @@ import { PropsWithChildren, useEffect } from 'react';
 
 import { trackService } from '@yemusic/services/v1';
 
-import createAppContext from '../createAppProvider';
+import createSingletonAppContext from '../createAppProvider';
 import { onAddTracks } from '../Tracks';
 
 import { onSetIsFetchingCategories, onSetTrendingTrackIds } from './actions';
@@ -13,7 +13,7 @@ export const initialCategoriesState: CategoriesEntity = {
 	trending: [],
 };
 
-export const CategoriesContext = createAppContext<CategoriesEntity>(initialCategoriesState);
+export const CategoriesContext = createSingletonAppContext<CategoriesEntity>(initialCategoriesState);
 
 export const CategoriesProvider = ({ children }: PropsWithChildren) => {
 	useEffect(() => {

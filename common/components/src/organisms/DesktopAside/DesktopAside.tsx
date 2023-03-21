@@ -7,9 +7,9 @@ import Typography from '../../atoms/Typography/Typography';
 import { Track } from '../Track';
 
 export const DesktopAside = () => {
-	const tracks = useContext(TracksContext.initial);
-	const { queueTrackIds, currentTrackId } = useContext(QueueContext.initial);
-	const { isPlaying } = useContext(PlayerControlsContext.initial);
+	const tracks = useContext(TracksContext.Context);
+	const { queueTrackIds, currentTrackId } = useContext(QueueContext.Context);
+	const { isPlaying } = useContext(PlayerControlsContext.Context);
 
 	const tracksQueue = useMemo(() => {
 		return tracks

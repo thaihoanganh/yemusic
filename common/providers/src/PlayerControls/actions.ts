@@ -68,3 +68,12 @@ export function onChangeVolume({ volume }: { volume: number }) {
 		volume,
 	}));
 }
+
+export function toggleMuteVolume() {
+	const { updateState } = PlayerControlsContext;
+
+	updateState(prevState => ({
+		...prevState,
+		isMute: !prevState.isMute,
+	}));
+}

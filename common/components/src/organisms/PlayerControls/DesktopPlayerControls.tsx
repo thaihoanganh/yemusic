@@ -15,6 +15,7 @@ import {
 	SkipNextIcon,
 	SkipPreviousIcon,
 	VolumeDownAltIcon,
+	VolumeMuteIcon,
 } from '../../atoms/Icons';
 import { Slider } from '../../atoms/Slider';
 import Typography from '../../atoms/Typography/Typography';
@@ -39,6 +40,7 @@ export const DesktopPlayerControls = () => {
 		isPlaying,
 		isShuffling,
 		repeatMode,
+		isMute,
 		handleAudioControls,
 		handleUpdateCurrentTime,
 		handlePlayerEnded,
@@ -49,6 +51,7 @@ export const DesktopPlayerControls = () => {
 		handleToggleShuffling,
 		handleToggleRepeatMode,
 		handleChangeVolume,
+		toggleMuteVolume,
 	} = usePlayerControls();
 
 	return (
@@ -136,7 +139,11 @@ export const DesktopPlayerControls = () => {
 						<DownloadIcon size="medium" color="on-surface-variant-dynamic" />
 					</UnstyledButton>
 					<Group alignItems="center">
-						<VolumeDownAltIcon size="large" color="on-surface-variant-dynamic" />
+						{isMute ? (
+							<VolumeMuteIcon onClick={toggleMuteVolume} size="large" color="on-surface-variant-dynamic" />
+						) : (
+							<VolumeDownAltIcon onClick={toggleMuteVolume} size="large" color="on-surface-variant-dynamic" />
+						)}
 						<Slider
 							min={0}
 							max={1}

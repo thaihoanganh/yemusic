@@ -1,14 +1,14 @@
 import React, { PropsWithChildren } from 'react';
 
-import createAppContext from '../createAppProvider';
+import createSingletonAppContext from '../createAppProvider';
 
-import { TrackEntity } from './types';
+import { ITrackEntity } from './types';
 
-export type TracksState = TrackEntity[];
+export type TracksState = ITrackEntity[];
 
 export type ITracksContext = [TracksState, React.Dispatch<React.SetStateAction<TracksState>>];
 
-export const TracksContext = createAppContext<TracksState>([]);
+export const TracksContext = createSingletonAppContext<TracksState>([]);
 
 export const TracksProvider = ({ children }: PropsWithChildren) => {
 	return <TracksContext.Provider>{children}</TracksContext.Provider>;

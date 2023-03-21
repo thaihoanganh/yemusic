@@ -12,7 +12,7 @@ export interface DesktopLayoutProps extends PropsWithChildren {
 }
 
 export const DesktopLayout = ({ aside, children, mainHeader, sidebar, playerControls }: DesktopLayoutProps) => {
-	const { currentTrackId } = useContext(QueueContext.initial);
+	const { currentTrackId } = useContext(QueueContext.Context);
 
 	return (
 		<div className={desktopLayoutStyles.layout}>
