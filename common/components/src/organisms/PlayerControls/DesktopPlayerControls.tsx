@@ -14,8 +14,9 @@ import {
 	ShuffleIcon,
 	SkipNextIcon,
 	SkipPreviousIcon,
-	VolumeDownAltIcon,
 	VolumeMuteIcon,
+	VolumeOffIcon,
+	VolumeUpIcon,
 } from '../../atoms/Icons';
 import { Slider } from '../../atoms/Slider';
 import Typography from '../../atoms/Typography/Typography';
@@ -32,6 +33,7 @@ const formatTime = (time: number) => {
 
 export const DesktopPlayerControls = () => {
 	const {
+		audioRef,
 		thumbnailRef,
 		trackNowPlaying,
 		duration,
@@ -41,7 +43,6 @@ export const DesktopPlayerControls = () => {
 		isShuffling,
 		repeatMode,
 		isMute,
-		handleAudioControls,
 		handleUpdateCurrentTime,
 		handlePlayerEnded,
 		handleChangeCurrentTime,
@@ -57,7 +58,7 @@ export const DesktopPlayerControls = () => {
 	return (
 		<Fragment>
 			<audio
-				ref={handleAudioControls}
+				ref={audioRef}
 				src={trackNowPlaying?.audioUrl}
 				loop={repeatMode === 'one'}
 				onPause={() => handleTogglePlaying(false)}
@@ -138,17 +139,21 @@ export const DesktopPlayerControls = () => {
 					<UnstyledButton>
 						<DownloadIcon size="medium" color="on-surface-variant-dynamic" />
 					</UnstyledButton>
-					<Group alignItems="center">
-						{isMute ? (
-							<VolumeMuteIcon onClick={toggleMuteVolume} size="large" color="on-surface-variant-dynamic" />
-						) : (
-							<VolumeDownAltIcon onClick={toggleMuteVolume} size="large" color="on-surface-variant-dynamic" />
-						)}
+					<Group spacing="xsmall" alignItems="center">
+						<UnstyledButton onClick={toggleMuteVolume}>
+							{isMute ? (
+								<VolumeOffIcon color="on-surface-variant-dynamic" />
+							) : volume === 0 ? (
+								<VolumeMuteIcon color="on-surface-variant-dynamic" />
+							) : (
+								<VolumeUpIcon color="on-surface-variant-dynamic" />
+							)}
+						</UnstyledButton>
 						<Slider
 							min={0}
 							max={1}
 							step={0.05}
-							defaultValue={volume}
+							value={volume}
 							onChange={e => handleChangeVolume(e.target.valueAsNumber)}
 						/>
 					</Group>
