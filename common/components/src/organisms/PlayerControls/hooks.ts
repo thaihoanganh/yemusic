@@ -72,23 +72,6 @@ export function usePlayerControls() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentTrackId]);
 
-	const handleAudioControls = useCallback(
-		(node: HTMLAudioElement) => {
-			if (node) {
-				audioRef.current = node;
-				audioRef.current.volume = volume;
-
-				if (isPlaying) {
-					audioRef.current.play();
-				} else {
-					audioRef.current.pause();
-				}
-			}
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[isPlaying]
-	);
-
 	const handleUpdateCurrentTime = useCallback((newCurrentTime: number) => {
 		onChangeCurrentTime({
 			currentTime: newCurrentTime,
@@ -107,15 +90,18 @@ export function usePlayerControls() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isShuffling, repeatMode]);
 
-	const handleChangeCurrentTime = useCallback((newCurrentTime: number) => {
-		if (audioRef.current) {
-			audioRef.current.currentTime = newCurrentTime;
-		}
+	const handleChangeCurrentTime = useCallback(
+		(newCurrentTime: number) => {
+			if (audioRef.current) {
+				audioRef.current.currentTime = newCurrentTime;
+			}
 
-		onChangeCurrentTime({
-			currentTime: newCurrentTime,
-		});
-	}, []);
+			onChangeCurrentTime({
+				currentTime: newCurrentTime,
+			});
+		},
+		[audioRef]
+	);
 
 	const handleTogglePlaying = useCallback((isPlaying: boolean) => {
 		onTogglePlaying({
@@ -150,14 +136,17 @@ export function usePlayerControls() {
 		onToggleRepeatMode();
 	}, []);
 
-	const handleChangeVolume = useCallback((newVolume: number) => {
-		if (audioRef.current) {
-			audioRef.current.volume = newVolume;
-		}
-		onChangeVolume({
-			volume: newVolume,
-		});
-	}, []);
+	const handleChangeVolume = useCallback(
+		(newVolume: number) => {
+			if (audioRef.current) {
+				audioRef.current.volume = newVolume;
+			}
+			onChangeVolume({
+				volume: newVolume,
+			});
+		},
+		[audioRef]
+	);
 
 	const exportState = {
 		audioRef,
@@ -173,7 +162,6 @@ export function usePlayerControls() {
 	};
 
 	const exportActions = {
-		handleAudioControls,
 		handleUpdateCurrentTime,
 		handlePlayerEnded,
 		handleChangeCurrentTime,
