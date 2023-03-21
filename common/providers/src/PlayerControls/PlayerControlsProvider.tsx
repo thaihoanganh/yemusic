@@ -22,6 +22,16 @@ export const PlayerControlsProvider = PlayerControlsContext.withProvider<PropsWi
 
 	useEffect(() => {
 		if (state.audioRef.current) {
+			if (state.isPlaying) {
+				state.audioRef.current.play();
+			} else {
+				state.audioRef.current.pause();
+			}
+		}
+	}, [state.isPlaying, state.audioRef]);
+
+	useEffect(() => {
+		if (state.audioRef.current) {
 			state.audioRef.current.muted = state.isMute;
 		}
 	}, [state.isMute, state.audioRef]);
