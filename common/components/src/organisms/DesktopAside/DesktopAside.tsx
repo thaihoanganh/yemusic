@@ -70,7 +70,7 @@ export const DesktopAside = () => {
 							author={track.author}
 							thumbnail={track.thumbnail}
 							trackId={track.id}
-							isPlaying={track.isNowPlaying}
+							isPlaying={track.id === currentTrackId && isPlaying}
 						/>
 					))}
 				</Stack>
