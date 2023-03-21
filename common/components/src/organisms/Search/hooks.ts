@@ -17,7 +17,7 @@ export function useSearch() {
 	const debounceRef = useRef<null | NodeJS.Timeout>(null);
 	const [isFocused, setIsFocused] = useState(false);
 
-	const { isSearching } = useContext(SearchContext.initial);
+	const { isSearching } = useContext(SearchContext.Context);
 
 	const handleToggleFocusSearchInput = useCallback((isFocus: boolean) => {
 		if (isFocus) {

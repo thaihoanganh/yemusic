@@ -1,42 +1,14 @@
-export interface TrackEntity {
-	/**
-	 * Unique identifier of the track
-	 */
-	id: string;
-	/**
-	 * Title of the track
-	 */
-	title: string;
-	/**
-	 * Author of the track
-	 */
-	author: string;
-	/**
-	 * Thumbnail of the track
-	 */
-	thumbnail: string;
-	/**
-	 * Duration of the track in seconds
-	 */
-	duration: number;
-	/**
-	 * List of sources of the track
-	 */
-	source: string[];
-	/**
-	 * URL of the audio file
-	 */
-	audioUrl: string;
-	/**
-	 * Whether the track is liked or not
-	 */
-	isLiked: boolean;
-	/**
-	 * Whether the track is currently loading or not
-	 */
-	isLoadingAudio: boolean;
-	/**
-	 * Whether the track is currently playing or not
-	 */
-	isNowPlaying: boolean;
-}
+import z from 'zod';
+
+export const TrackEntity = z.object({
+	id: z.string(),
+	title: z.string(),
+	author: z.string(),
+	thumbnail: z.string(),
+	duration: z.number(),
+	source: z.array(z.string()),
+	audioUrl: z.string(),
+	isLiked: z.boolean(),
+});
+
+export type ITrackEntity = z.infer<typeof TrackEntity>;

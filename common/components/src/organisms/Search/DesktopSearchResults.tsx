@@ -16,15 +16,14 @@ import Typography from '../../atoms/Typography/Typography';
 import { Track } from '../Track';
 
 export const DesktopSearchResults = () => {
-	const tracks = useContext(TracksContext.initial);
-	const { isSearching, searchResultsIds } = useContext(SearchContext.initial);
-	const { currentTrackId } = useContext(QueueContext.initial);
-	const { isPlaying } = useContext(PlayerControlsContext.initial);
+	const tracks = useContext(TracksContext.Context);
+	const { isSearching, searchResultsIds } = useContext(SearchContext.Context);
+	const { currentTrackId } = useContext(QueueContext.Context);
+	const { isPlaying } = useContext(PlayerControlsContext.Context);
 
 	const searchResults = useMemo(() => {
 		return tracks.filter(track => searchResultsIds.includes(track.id));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [searchResultsIds]);
+	}, [searchResultsIds, tracks]);
 
 	const handleClickTrack = useCallback(({ trackId }: { trackId: string }) => {
 		onTogglePlaying({

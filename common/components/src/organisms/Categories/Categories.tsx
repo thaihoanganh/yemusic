@@ -16,10 +16,10 @@ import Typography from '../../atoms/Typography/Typography';
 import { Track } from '../Track';
 
 export const Categories = () => {
-	const tracks = useContext(TracksContext.initial);
-	const { isFetchingCategories, trending } = useContext(CategoriesContext.initial);
-	const { currentTrackId } = useContext(QueueContext.initial);
-	const { isPlaying } = useContext(PlayerControlsContext.initial);
+	const tracks = useContext(TracksContext.Context);
+	const { isFetchingCategories, trending } = useContext(CategoriesContext.Context);
+	const { currentTrackId } = useContext(QueueContext.Context);
+	const { isPlaying } = useContext(PlayerControlsContext.Context);
 
 	const trendingTracks = useMemo(() => {
 		return tracks
@@ -27,8 +27,7 @@ export const Categories = () => {
 			.sort((a, b) => {
 				return trending.indexOf(a.id) - trending.indexOf(b.id);
 			});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [trending]);
+	}, [trending, tracks]);
 
 	const handleClickTrack = useCallback(({ trackId }: { trackId: string }) => {
 		onTogglePlaying({

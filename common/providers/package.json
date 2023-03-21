@@ -11,9 +11,10 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@yemusic/services": "workspace:*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"@yemusic/services": "workspace:*"
+		"zod": "^3.21.4"
 	},
 	"devDependencies": {
 		"@types/react": "18.0.27",

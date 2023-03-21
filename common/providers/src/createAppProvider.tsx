@@ -1,25 +1,20 @@
 import React, { createContext, PropsWithChildren, useState } from 'react';
 
-export function createAppContext<IState>(initialState: IState): {
-	Provider: ({ children }: PropsWithChildren) => JSX.Element;
-	initial: React.Context<IState>;
-	getState: () => IState;
-	updateState: React.Dispatch<React.SetStateAction<IState>>;
-} {
+export function createSingletonAppContext<IState>(initialState: IState) {
 	const Context = createContext<IState>(initialState);
 
-	let getState: IState;
+	let state: IState;
 	let updateState: React.Dispatch<React.SetStateAction<IState>>;
 
 	const Provider = ({ children }: PropsWithChildren) => {
-		const [state, setState] = useState<IState>(initialState);
+		const [_state, setState] = useState<IState>(initialState);
 
 		return (
-			<Context.Provider value={state}>
+			<Context.Provider value={_state}>
 				<Context.Consumer>
 					{() => {
 						// eslint-disable-next-line @typescript-eslint/no-explicit-any
-						getState = (Context as any)._currentValue;
+						state = (Context as any)._currentValue;
 						updateState = setState;
 
 						return children;
@@ -31,10 +26,19 @@ export function createAppContext<IState>(initialState: IState): {
 
 	return {
 		Provider,
-		initial: Context,
-		getState: () => Object.freeze(getState),
-		updateState: value => updateState(value),
+		Context,
+		getState: () => Object.freeze(state),
+		updateState: ((value: IState) => updateState(value)) as React.Dispatch<React.SetStateAction<IState>>,
+		withProvider: <P,>(Component: React.ComponentType<P>) => {
+			return ({ ...props }: PropsWithChildren & P) => {
+				return (
+					<Provider>
+						<Component {...props} />
+					</Provider>
+				);
+			};
+		},
 	};
 }
 
-export default createAppContext;
+export default createSingletonAppContext;

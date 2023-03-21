@@ -12,6 +12,7 @@ import {
 	PlayerControlsContext,
 	QueueContext,
 	setAudioUrlTrack,
+	toggleMuteVolume,
 	TracksContext,
 } from '@yemusic/providers';
 import { trackService } from '@yemusic/services/v1';
@@ -19,14 +20,13 @@ import { trackService } from '@yemusic/services/v1';
 import { useTheme } from '../../Theme';
 
 export function usePlayerControls() {
-	const tracks = useContext(TracksContext.initial);
-	const { isPlaying, isShuffling, repeatMode, volume, currentTime, duration } = useContext(
-		PlayerControlsContext.initial
+	const tracks = useContext(TracksContext.Context);
+	const { isPlaying, isShuffling, repeatMode, volume, currentTime, duration, isMute, audioRef } = useContext(
+		PlayerControlsContext.Context
 	);
-	const { currentTrackId } = useContext(QueueContext.initial);
+	const { currentTrackId } = useContext(QueueContext.Context);
 	const { onSetDynamicThemeFromImage } = useTheme();
 
-	const audioRef = useRef<null | HTMLAudioElement>(null);
 	const thumbnailRef = useRef<null | HTMLImageElement>(null);
 
 	useEffect(
@@ -159,7 +159,7 @@ export function usePlayerControls() {
 		});
 	}, []);
 
-	return {
+	const exportState = {
 		audioRef,
 		thumbnailRef,
 		trackNowPlaying,
@@ -169,6 +169,10 @@ export function usePlayerControls() {
 		isPlaying,
 		isShuffling,
 		repeatMode,
+		isMute,
+	};
+
+	const exportActions = {
 		handleAudioControls,
 		handleUpdateCurrentTime,
 		handlePlayerEnded,
@@ -179,5 +183,11 @@ export function usePlayerControls() {
 		handleToggleShuffling,
 		handleToggleRepeatMode,
 		handleChangeVolume,
+		toggleMuteVolume,
+	};
+
+	return {
+		...exportState,
+		...exportActions,
 	};
 }

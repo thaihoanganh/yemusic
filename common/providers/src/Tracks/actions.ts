@@ -1,7 +1,7 @@
 import { TracksContext } from './TracksProvider';
-import { TrackEntity } from './types';
+import { ITrackEntity } from './types';
 
-export const onAddTracks = ({ newTracks }: { newTracks: TrackEntity[] }) => {
+export const onAddTracks = ({ newTracks }: { newTracks: ITrackEntity[] }) => {
 	const { getState, updateState } = TracksContext;
 	const tracks = getState();
 
