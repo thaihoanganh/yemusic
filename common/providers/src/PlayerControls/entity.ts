@@ -1,4 +1,4 @@
-import { RefObject } from 'react';
+import React from 'react';
 
 import z from 'zod';
 
@@ -13,5 +13,5 @@ export const PlayerControlsEntity = z.object({
 });
 
 export type IPlayerControlsEntity = z.infer<typeof PlayerControlsEntity> & {
-	audioRef: RefObject<HTMLAudioElement | null>;
+	audioRef: React.MutableRefObject<HTMLAudioElement | null>;
 };
