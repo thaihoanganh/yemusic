@@ -1,4 +1,3 @@
 packages:
-  - "apps/*"
-  - "common/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'

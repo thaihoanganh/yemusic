@@ -1,12 +1,11 @@
+import { Fragment } from 'react';
+
 import {
-	DesktopAside,
 	DesktopLayout,
-	DesktopMainHeader,
-	DesktopPlayerControls,
-	DesktopSidebar,
+	MobileLayout,
 	ThemeProvider,
-	TrackProvider,
-	useTheme,
+	TrackContextMenu,
+	TrackContextMenuProvider,
 } from '@yemusic/components';
 import {
 	CategoriesProvider,
@@ -17,47 +16,47 @@ import {
 } from '@yemusic/providers';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useCallback } from 'react';
 import '../../public/assets/styles/globals.css';
 
-const _app = ({ Component, pageProps }: AppProps) => {
-	const { onSetThemeFromSourceColor } = useTheme();
-
-	const setThemeOnStartApp = useCallback(() => {
-		onSetThemeFromSourceColor({
-			primaryColor: '#2D8BE1',
-			dynamicColor: '#2D8BE1',
-		});
-	}, []);
+const _app = ({
+	Component,
+	pageProps,
+}: AppProps<{
+	userAgent: string;
+}>) => {
+	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(pageProps.userAgent);
+	const device = isMobile ? 'mobile' : 'desktop';
 
 	return (
-		<div ref={setThemeOnStartApp}>
+		<Fragment>
 			<Head>
 				<title>Yemusic</title>
 			</Head>
-			<TracksProvider>
-				<QueueProvider>
-					<CategoriesProvider>
-						<SearchProvider>
-							<PlayerControlsProvider>
-								<ThemeProvider>
-									<TrackProvider>
-										<DesktopLayout
-											sidebar={<DesktopSidebar />}
-											mainHeader={<DesktopMainHeader />}
-											aside={<DesktopAside />}
-											playerControls={<DesktopPlayerControls />}
-										>
-											<Component {...pageProps} />
-										</DesktopLayout>
-									</TrackProvider>
-								</ThemeProvider>
-							</PlayerControlsProvider>
-						</SearchProvider>
-					</CategoriesProvider>
-				</QueueProvider>
-			</TracksProvider>
-		</div>
+			<ThemeProvider device={device}>
+				<TracksProvider>
+					<QueueProvider>
+						<CategoriesProvider>
+							<SearchProvider>
+								<PlayerControlsProvider>
+									<TrackContextMenuProvider>
+										{isMobile ? (
+											<MobileLayout>
+												<Component {...pageProps} />
+											</MobileLayout>
+										) : (
+											<DesktopLayout>
+												<Component {...pageProps} />
+											</DesktopLayout>
+										)}
+										<TrackContextMenu isMobile={isMobile} />
+									</TrackContextMenuProvider>
+								</PlayerControlsProvider>
+							</SearchProvider>
+						</CategoriesProvider>
+					</QueueProvider>
+				</TracksProvider>
+			</ThemeProvider>
+		</Fragment>
 	);
 };
 
