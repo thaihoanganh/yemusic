@@ -1,13 +1,24 @@
-import { Categories } from '@yemusic/components';
-import { CategoriesContext } from '@yemusic/providers';
-import React, { Fragment } from 'react';
+import { Categories, Frame, useTheme } from '@yemusic/components';
+import { GetServerSideProps, NextPage } from 'next';
 
-const HomePage = () => {
+const HomePage: NextPage = () => {
+	const { device } = useTheme();
+
 	return (
-		<Fragment>
+		<Frame horizontalPadding={device === 'desktop' ? 'large' : 'small'} verticalPadding="small">
 			<Categories />
-		</Fragment>
+		</Frame>
 	);
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+	const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
+
+	return {
+		props: {
+			userAgent,
+		},
+	};
 };
 
 export default HomePage;
