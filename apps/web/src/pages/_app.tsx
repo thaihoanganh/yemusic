@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import {
 	DesktopLayout,
 	MobileLayout,
@@ -14,7 +16,6 @@ import {
 } from '@yemusic/providers';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { Fragment } from 'react';
 import '../../public/assets/styles/globals.css';
 
 const _app = ({

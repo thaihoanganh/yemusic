@@ -1,7 +1,8 @@
 import { Frame, SearchResults, useTheme } from '@yemusic/components';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 
-const search = () => {
+const search: NextPage = () => {
+	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const { device } = useTheme();
 
 	const isDesktop = device === 'desktop';
