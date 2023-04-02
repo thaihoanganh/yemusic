@@ -1,6 +1,12 @@
 import { ITrackEntity } from './entity';
 import { TracksContext } from './TracksProvider';
 
+export function onSetTracks({ tracks }: { tracks: ITrackEntity[] }) {
+	const { updateState } = TracksContext;
+
+	updateState(() => tracks);
+}
+
 export const onAddTracks = ({ newTracks }: { newTracks: ITrackEntity[] }) => {
 	const { getState, updateState } = TracksContext;
 	const tracks = getState();

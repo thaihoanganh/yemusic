@@ -18,7 +18,7 @@ export const getTracksCategoriesResponseSchema = z.object({
 	error: z.any(),
 });
 
-export const getSearchTracksResponseSchema = z.object({
+export const getTracksResponseSchema = z.object({
 	success: z.boolean(),
 	data: z.object({
 		items: z.array(

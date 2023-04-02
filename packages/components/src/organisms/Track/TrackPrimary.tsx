@@ -1,25 +1,31 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback } from 'react';
-
-import {
-	ITrackEntity,
-	onAddTrackIdToQueueIds,
-	onSetCurrentTrackId,
-	onToggleLikeTrack,
-	onTogglePlaying,
-} from '@yemusic/providers';
+import { ITrackEntity } from '@yemusic/providers';
 import Image from 'next/image';
 
 import { UnstyledButton } from '../../atoms/Button';
 import Frame, { Group, Stack } from '../../atoms/Frame';
-import { FavoriteFillIcon, FavoriteIcon, MoreHorizIcon, PlayCircleFillIcon } from '../../atoms/Icons';
+import { FavoriteFillIcon, FavoriteIcon, MoreHorizIcon, PlayCircleIcon } from '../../atoms/Icons';
 import { LoadingLayer } from '../../atoms/LoadingLayer';
 import { Paper } from '../../atoms/Paper';
 import { StateLayer } from '../../atoms/StateLayer';
 import Typography from '../../atoms/Typography/Typography';
 import { useTheme } from '../../Theme';
 
-export type TrackPrimaryProps = Pick<ITrackEntity, 'author' | 'duration' | 'id' | 'isLiked' | 'thumbnail' | 'title'>;
+export interface TrackPrimaryProps
+	extends Pick<ITrackEntity, 'author' | 'duration' | 'id' | 'isLiked' | 'thumbnail' | 'title'> {
+	isNowPlaying?: boolean;
+	isVisibleDuration?: boolean;
+	isVisibleMoreOnlyOnHover?: boolean;
+	onToggleLikeTrack?: () => void;
+	onTogglePlaying?: () => void;
+	onOpenTrackContextMenu?: ({
+		position,
+	}: {
+		position: {
+			x: number;
+			y: number;
+		};
+	}) => void;
+}
 
 const imageSize = {
 	desktop: {
@@ -28,27 +34,33 @@ const imageSize = {
 	},
 };
 
-export const TrackPrimary = ({ author, id, isLiked, thumbnail, title }: TrackPrimaryProps) => {
+export const TrackPrimary = ({
+	author,
+	isLiked,
+	isNowPlaying,
+	thumbnail,
+	title,
+	onOpenTrackContextMenu,
+	onToggleLikeTrack,
+	onTogglePlaying,
+}: TrackPrimaryProps) => {
 	const { device } = useTheme();
 
 	const isDesktop = device === 'desktop';
 
-	const handleClickTrack = useCallback(() => {
-		onTogglePlaying({
-			isPlaying: false,
-		});
-		onAddTrackIdToQueueIds({
-			trackId: id,
-		});
-		onSetCurrentTrackId({
-			trackId: id,
-		});
-	}, [id]);
+	const handleOpenTrackContextMenu = (
+		e: React.MouseEvent<HTMLDivElement, MouseEvent> | React.MouseEvent<HTMLButtonElement, MouseEvent>
+	) => {
+		if (!onOpenTrackContextMenu) {
+			return;
+		}
 
-	const handleClickFavorite = () => {
-		onToggleLikeTrack({
-			trackId: id,
-			isLiked: !isLiked,
+		e.preventDefault();
+		onOpenTrackContextMenu({
+			position: {
+				x: e.clientX,
+				y: e.clientY,
+			},
 		});
 	};
 
@@ -60,10 +72,28 @@ export const TrackPrimary = ({ author, id, isLiked, thumbnail, title }: TrackPri
 						overflow: 'hidden',
 						borderRadius: isDesktop ? 12 : 0,
 					}}
-					color={isDesktop ? (isHover ? 'primary-container' : 'secondary-container') : undefined}
-					surfaceLevel={3}
+					color={
+						isDesktop
+							? isNowPlaying
+								? 'primary-container-dynamic'
+								: isHover
+								? 'primary-container'
+								: 'secondary-container'
+							: undefined
+					}
+					surfaceLevel={5}
 				>
-					<Frame horizontalPadding={isDesktop ? 'small' : undefined} verticalPadding={isDesktop ? 'small' : undefined}>
+					<Frame
+						horizontalPadding={isDesktop ? 'small' : undefined}
+						verticalPadding={isDesktop ? 'small' : undefined}
+						role={isDesktop ? undefined : 'button'}
+						onClick={() => {
+							if (!isDesktop && onTogglePlaying) {
+								onTogglePlaying();
+							}
+						}}
+						onContextMenu={handleOpenTrackContextMenu}
+					>
 						<Stack
 							style={{
 								width: imageSize.desktop.width,
@@ -100,14 +130,18 @@ export const TrackPrimary = ({ author, id, isLiked, thumbnail, title }: TrackPri
 													justifyContent="center"
 													alignItems="center"
 												>
-													<UnstyledButton onClick={handleClickFavorite}>
-														{isLiked ? <FavoriteFillIcon /> : <FavoriteIcon />}
+													<UnstyledButton onClick={onToggleLikeTrack}>
+														{isLiked ? (
+															<FavoriteFillIcon color={isNowPlaying ? 'primary-dynamic' : 'primary'} />
+														) : (
+															<FavoriteIcon color={isNowPlaying ? 'primary-dynamic' : 'primary'} />
+														)}
 													</UnstyledButton>
-													<UnstyledButton onClick={handleClickTrack}>
-														<PlayCircleFillIcon size="xlarge" color="primary" />
+													<UnstyledButton onClick={onTogglePlaying}>
+														<PlayCircleIcon size="xlarge" color={isNowPlaying ? 'primary-dynamic' : 'primary'} />
 													</UnstyledButton>
-													<UnstyledButton>
-														<MoreHorizIcon />
+													<UnstyledButton onClick={handleOpenTrackContextMenu}>
+														<MoreHorizIcon color={isNowPlaying ? 'primary-dynamic' : 'primary'} />
 													</UnstyledButton>
 												</Group>
 											</Paper>
@@ -122,7 +156,15 @@ export const TrackPrimary = ({ author, id, isLiked, thumbnail, title }: TrackPri
 										<Typography
 											variant="title"
 											size="small"
-											color={isHover ? 'on-primary-container' : 'on-surface'}
+											color={
+												isDesktop
+													? isNowPlaying
+														? 'on-primary-container-dynamic'
+														: isHover
+														? 'on-primary-container'
+														: 'on-surface'
+													: 'on-surface'
+											}
 											title={title}
 											truncate
 										>
@@ -133,7 +175,15 @@ export const TrackPrimary = ({ author, id, isLiked, thumbnail, title }: TrackPri
 										<Typography
 											variant="body"
 											size="small"
-											color={isHover ? 'on-primary-container' : 'on-surface-variant'}
+											color={
+												isDesktop
+													? isNowPlaying
+														? 'on-primary-container-dynamic'
+														: isHover
+														? 'on-primary-container'
+														: 'on-surface-variant'
+													: 'on-surface-variant'
+											}
 											title={author}
 											truncate
 										>

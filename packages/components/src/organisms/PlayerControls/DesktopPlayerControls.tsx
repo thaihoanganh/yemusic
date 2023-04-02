@@ -7,6 +7,7 @@ import { UnstyledButton } from '../../atoms/Button';
 import { Group, Stack } from '../../atoms/Frame';
 import {
 	DownloadIcon,
+	FavoriteFillIcon,
 	FavoriteIcon,
 	PauseCircleFillIcon,
 	PlayCircleFillIcon,
@@ -45,6 +46,7 @@ export const DesktopPlayerControls = () => {
 		handleSkipToPreviousTrack,
 		handleToggleShuffling,
 		handleToggleRepeatMode,
+		handleToggleLikeTrack,
 		handleChangeVolume,
 		toggleMuteVolume,
 	} = usePlayerControls();
@@ -96,8 +98,12 @@ export const DesktopPlayerControls = () => {
 						}}
 						justifyContent="center"
 					>
-						<UnstyledButton>
-							<FavoriteIcon size="medium" color="on-surface-variant-dynamic" />
+						<UnstyledButton onClick={handleToggleLikeTrack}>
+							{trackNowPlaying?.isLiked ? (
+								<FavoriteFillIcon size="medium" color="primary-dynamic" />
+							) : (
+								<FavoriteIcon size="medium" color="on-surface-variant-dynamic" />
+							)}
 						</UnstyledButton>
 					</Group>
 				</div>

@@ -201,24 +201,10 @@ export const TrackSecondary = ({
 									<UnstyledButton onClick={onToggleLikeTrack}>
 										<LoadingLayer loading="inherit">
 											{isLiked ? (
-												<FavoriteFillIcon
-													color={
-														isNowPlaying
-															? 'on-primary-container-dynamic'
-															: isHover
-															? 'on-primary-container'
-															: 'on-surface-variant'
-													}
-												/>
+												<FavoriteFillIcon color={isNowPlaying ? 'primary-dynamic' : 'primary'} />
 											) : (
 												<FavoriteIcon
-													color={
-														isNowPlaying
-															? 'on-primary-container-dynamic'
-															: isHover
-															? 'on-primary-container'
-															: 'on-surface-variant'
-													}
+													color={isNowPlaying ? 'primary-dynamic' : isHover ? 'primary' : 'on-surface-variant'}
 												/>
 											)}
 										</LoadingLayer>

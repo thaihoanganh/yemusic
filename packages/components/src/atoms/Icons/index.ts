@@ -1,3 +1,4 @@
+export * from './AddBoxFillIcon';
 export * from './ArrowBackIcon';
 export * from './ArrowForwardIcon';
 export * from './CloseIcon';

@@ -9,6 +9,7 @@ import { Group, Stack } from '../../atoms/Frame';
 import {
 	DownloadIcon,
 	ExpandMoreIcon,
+	FavoriteFillIcon,
 	FavoriteIcon,
 	MoreVertIcon,
 	PauseCircleFillIcon,
@@ -52,6 +53,7 @@ export const MobilePlayerControls = () => {
 		handleSkipToPreviousTrack,
 		handleToggleShuffling,
 		handleToggleRepeatMode,
+		handleToggleLikeTrack,
 	} = usePlayerControls();
 
 	const audioSrc = trackNowPlaying?.audio[0]?.url || '';
@@ -331,8 +333,12 @@ export const MobilePlayerControls = () => {
 										</Typography>
 									</Stack>
 
-									<UnstyledButton>
-										<FavoriteIcon />
+									<UnstyledButton onClick={handleToggleLikeTrack}>
+										{trackNowPlaying?.isLiked ? (
+											<FavoriteFillIcon size="medium" color="primary-dynamic" />
+										) : (
+											<FavoriteIcon size="medium" color="on-surface-variant-dynamic" />
+										)}
 									</UnstyledButton>
 								</Group>
 

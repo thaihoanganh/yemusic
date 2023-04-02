@@ -20,7 +20,7 @@ export interface TypographyProps extends Omit<React.HTMLAttributes<HTMLElement>,
 	variant: 'body' | 'display' | 'headline' | 'label' | 'title';
 }
 
-const Typography = ({
+export const Typography = ({
 	className,
 	color = 'on-surface',
 	element = 'p',
