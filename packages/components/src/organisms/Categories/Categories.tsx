@@ -15,9 +15,11 @@ import {
 import Link from 'next/link';
 
 import { UnstyledButton } from '../../atoms/Button';
+import Carousel from '../../atoms/Carousel/Carousel';
 import { Group, Stack } from '../../atoms/Frame';
 import { LoadingLayer, LoadingLayerProvider } from '../../atoms/LoadingLayer';
 import Typography from '../../atoms/Typography/Typography';
+import { useTheme } from '../../Theme';
 import { TrackPrimary, TrackSecondary } from '../Track';
 import { useTrackContextMenu } from '../Track/hooks';
 
@@ -25,8 +27,9 @@ export const Categories = () => {
 	const tracks = useContext(TracksContext.Context);
 	const { isFetchingCategories, trending } = useContext(CategoriesContext.Context);
 	const { queueTrackIds, currentTrackId } = useContext(QueueContext.Context);
-	const { onOpenTrackContextMenu } = useTrackContextMenu();
 	const playlists = useContext(PlaylistsContext.Context);
+	const { onOpenTrackContextMenu } = useTrackContextMenu();
+	const { device } = useTheme();
 
 	const trendingTracks = useMemo(() => {
 		return tracks
@@ -126,54 +129,56 @@ export const Categories = () => {
 							</Link>
 						</Group>
 
-						<Group spacing="medium">
-							{isFetchingCategories
-								? Array.from({
-										length: 20,
-								  }).map((_, index) => (
-										<div key={index}>
-											<TrackSecondary
-												key={index}
-												author="author"
-												duration={0}
-												id="id"
-												isLiked={false}
-												isVisibleDuration
-												thumbnail=""
-												title="title"
-											/>
-										</div>
-								  ))
-								: recentlyPlayedTracks.map(track => (
-										<TrackPrimary
-											key={track.id}
-											author={track.author}
-											duration={track.duration}
-											id={track.id}
-											isLiked={track.isLiked}
-											isNowPlaying={track.id === currentTrackId}
-											isVisibleDuration
-											thumbnail={track.thumbnail}
-											title={track.title}
-											onOpenTrackContextMenu={({ position }) => {
-												onOpenTrackContextMenu({
-													desktopPosition: position,
-													trackInfo: {
-														author: track.author,
-														id: track.id,
-														isInQueue: queueTrackIds.includes(track.id),
-														isLiked: track.isLiked,
-														isNowPlaying: track.id === currentTrackId,
-														thumbnail: track.thumbnail,
-														title: track.title,
-													},
-												});
-											}}
-											onToggleLikeTrack={() => handleToggleLikeTrack(track.id, !track.isLiked)}
-											onTogglePlaying={() => handleTogglePlaying(track.id)}
-										/>
-								  ))}
-						</Group>
+						{isFetchingCategories ? (
+							<Group spacing="small">
+								{Array.from({
+									length: 20,
+								}).map((_, index) => (
+									<TrackSecondary
+										key={index}
+										author="author"
+										duration={0}
+										id="id"
+										isLiked={false}
+										isVisibleDuration
+										thumbnail=""
+										title="title"
+									/>
+								))}
+							</Group>
+						) : (
+							<Carousel key={String(Boolean(currentTrackId))} isScrollable={device === 'mobile'}>
+								{recentlyPlayedTracks.map(track => (
+									<TrackPrimary
+										key={track.id}
+										author={track.author}
+										duration={track.duration}
+										id={track.id}
+										isLiked={track.isLiked}
+										isNowPlaying={track.id === currentTrackId}
+										isVisibleDuration
+										thumbnail={track.thumbnail}
+										title={track.title}
+										onOpenTrackContextMenu={({ position }) => {
+											onOpenTrackContextMenu({
+												desktopPosition: position,
+												trackInfo: {
+													author: track.author,
+													id: track.id,
+													isInQueue: queueTrackIds.includes(track.id),
+													isLiked: track.isLiked,
+													isNowPlaying: track.id === currentTrackId,
+													thumbnail: track.thumbnail,
+													title: track.title,
+												},
+											});
+										}}
+										onToggleLikeTrack={() => handleToggleLikeTrack(track.id, !track.isLiked)}
+										onTogglePlaying={() => handleTogglePlaying(track.id)}
+									/>
+								))}
+							</Carousel>
+						)}
 					</Stack>
 				) : null}
 
