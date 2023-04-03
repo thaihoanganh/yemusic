@@ -70,6 +70,14 @@ export function usePlayerControls() {
 		[currentTrackId]
 	);
 
+	const handleSetAudioRef = useCallback((audioNode: HTMLAudioElement | null) => {
+		if (audioNode) {
+			audioNode.volume = volume;
+			audioRef.current = audioNode;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	const trackNowPlaying = useMemo(() => {
 		return tracks.find(track => track.id === currentTrackId);
 	}, [tracks, currentTrackId]);
@@ -193,7 +201,6 @@ export function usePlayerControls() {
 	);
 
 	const exportState = {
-		audioRef,
 		thumbnailRef,
 		trackNowPlaying,
 		duration,
@@ -206,6 +213,7 @@ export function usePlayerControls() {
 	};
 
 	const exportActions = {
+		handleSetAudioRef,
 		handleUpdateCurrentTime,
 		handlePlayerEnded,
 		handleChangeCurrentTime,

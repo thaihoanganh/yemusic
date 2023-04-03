@@ -28,7 +28,6 @@ import { desktopPlayerControlsStyles } from './PlayerControls.css';
 
 export const DesktopPlayerControls = () => {
 	const {
-		audioRef,
 		thumbnailRef,
 		trackNowPlaying,
 		duration,
@@ -38,6 +37,7 @@ export const DesktopPlayerControls = () => {
 		isShuffling,
 		repeatMode,
 		isMute,
+		handleSetAudioRef,
 		handleUpdateCurrentTime,
 		handlePlayerEnded,
 		handleChangeCurrentTime,
@@ -57,7 +57,7 @@ export const DesktopPlayerControls = () => {
 	return (
 		<Fragment>
 			<audio
-				ref={audioRef}
+				ref={handleSetAudioRef}
 				src={audioSrc}
 				loop={repeatMode === 'one'}
 				onPause={() => handleTogglePlaying(false)}

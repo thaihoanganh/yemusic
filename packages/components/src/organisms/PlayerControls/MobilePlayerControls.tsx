@@ -37,7 +37,6 @@ export const MobilePlayerControls = () => {
 	const [isCollapsed, setIsCollapsed] = useState(true);
 
 	const {
-		audioRef,
 		thumbnailRef,
 		trackNowPlaying,
 		duration,
@@ -45,6 +44,7 @@ export const MobilePlayerControls = () => {
 		isPlaying,
 		isShuffling,
 		repeatMode,
+		handleSetAudioRef,
 		handleUpdateCurrentTime,
 		handlePlayerEnded,
 		handleChangeCurrentTime,
@@ -61,7 +61,7 @@ export const MobilePlayerControls = () => {
 	return (
 		<Fragment>
 			<audio
-				ref={audioRef}
+				ref={handleSetAudioRef}
 				src={audioSrc}
 				loop={repeatMode === 'one'}
 				onPause={() => handleTogglePlaying(false)}
