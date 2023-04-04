@@ -64,6 +64,38 @@ export function usePlayerControls() {
 							});
 						});
 				}
+
+				navigator.mediaSession.metadata = new MediaMetadata({
+					title: trackNowPlaying.title,
+					artist: trackNowPlaying.author,
+					artwork: [
+						{
+							src: trackNowPlaying.thumbnail,
+							sizes: '512x512',
+							type: 'image/png',
+						},
+					],
+				});
+
+				navigator.mediaSession.setActionHandler('play', () => {
+					onTogglePlaying({
+						isPlaying: true,
+					});
+				});
+
+				navigator.mediaSession.setActionHandler('pause', () => {
+					onTogglePlaying({
+						isPlaying: false,
+					});
+				});
+
+				navigator.mediaSession.setActionHandler('previoustrack', () => {
+					handleSkipToPreviousTrack();
+				});
+
+				navigator.mediaSession.setActionHandler('nexttrack', () => {
+					handleSkipToNextTrack();
+				});
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
