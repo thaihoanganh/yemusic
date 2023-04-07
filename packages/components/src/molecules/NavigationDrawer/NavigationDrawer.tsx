@@ -16,7 +16,7 @@ export const NavigationDrawer = ({ children }: NavigationDrawerProps) => {
 	const navigationDrawerChildren = Children.map(children, child => {
 		if (isValidElement(child)) {
 			return cloneElement<NavigationDrawerItemProps>(child, {
-				isActive: child.props.exact ? router.pathname === child.props.to : router.pathname.startsWith(child.props.to),
+				isActive: child.props.exact ? router.asPath === child.props.to : router.asPath.startsWith(child.props.to),
 			});
 		} else {
 			throw new Error('NavigationDrawer: children must be valid elements');

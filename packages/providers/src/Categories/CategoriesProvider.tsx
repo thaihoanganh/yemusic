@@ -24,28 +24,32 @@ export const CategoriesProvider = CategoriesContext.withProvider(({ children }: 
 		categoriesService
 			.getTracksCategories()
 			.then(data => {
-				onAddTracks({
-					newTracks: data.trending.items.map(track => ({
-						id: track.id,
-						title: track.title,
-						author: track.author,
-						thumbnail: track.thumbnail,
-						duration: track.duration,
-						source: [],
-						audio: [],
-						isLiked: false,
-						isLoadingAudio: false,
-						isNowPlaying: false,
-					})),
-				});
-				onSetTrendingTrackIds({
-					trackIds: data.trending.items.map(track => track.id),
-				});
+				setTimeout(() => {
+					onAddTracks({
+						newTracks: data.trending.items.map(track => ({
+							id: track.id,
+							title: track.title,
+							author: track.author,
+							thumbnail: track.thumbnail,
+							duration: track.duration,
+							source: [],
+							audio: [],
+							isLiked: false,
+							isLoadingAudio: false,
+							isNowPlaying: false,
+						})),
+					});
+					onSetTrendingTrackIds({
+						trackIds: data.trending.items.map(track => track.id),
+					});
+				}, 100);
 			})
 			.finally(() => {
-				onSetIsFetchingCategories({
-					isFetching: false,
-				});
+				setTimeout(() => {
+					onSetIsFetchingCategories({
+						isFetching: false,
+					});
+				}, 100);
 			});
 	}, []);
 

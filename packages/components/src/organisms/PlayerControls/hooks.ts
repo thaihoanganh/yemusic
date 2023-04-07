@@ -1,8 +1,11 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import {
+	generateId,
+	onAddTrackToPlaylistWithSlug,
 	onChangeCurrentTime,
 	onChangeVolume,
+	onRemoveTrackFromPlaylistWithSlug,
 	onSetDuration,
 	onSkipToNextTrack,
 	onSkipToPreviousTrack,
@@ -61,16 +64,55 @@ export function usePlayerControls() {
 							});
 						});
 				}
+
+				navigator.mediaSession.metadata = new MediaMetadata({
+					title: trackNowPlaying.title,
+					artist: trackNowPlaying.author,
+					artwork: [
+						{
+							src: trackNowPlaying.thumbnail,
+							sizes: '512x512',
+							type: 'image/png',
+						},
+					],
+				});
+
+				navigator.mediaSession.setActionHandler('play', () => {
+					onTogglePlaying({
+						isPlaying: true,
+					});
+				});
+
+				navigator.mediaSession.setActionHandler('pause', () => {
+					onTogglePlaying({
+						isPlaying: false,
+					});
+				});
+
+				navigator.mediaSession.setActionHandler('previoustrack', () => {
+					handleSkipToPreviousTrack();
+				});
+
+				navigator.mediaSession.setActionHandler('nexttrack', () => {
+					handleSkipToNextTrack();
+				});
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[currentTrackId]
 	);
 
+	const handleSetAudioRef = useCallback((audioNode: HTMLAudioElement | null) => {
+		if (audioNode) {
+			audioNode.volume = volume;
+			audioRef.current = audioNode;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	const trackNowPlaying = useMemo(() => {
 		return tracks.find(track => track.id === currentTrackId);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentTrackId]);
+	}, [tracks, currentTrackId]);
 
 	const handleUpdateCurrentTime = useCallback((newCurrentTime: number) => {
 		onChangeCurrentTime({
@@ -115,18 +157,38 @@ export function usePlayerControls() {
 			onTogglePlaying({
 				isPlaying: false,
 			});
-			onSkipToNextTrack({
+			const { nextTrackId } = onSkipToNextTrack({
 				isShuffling: isShuffling,
 			});
+			if (trackNowPlaying) {
+				onAddTrackToPlaylistWithSlug({
+					slug: 'recently-played',
+					track: {
+						_id: generateId(),
+						trackId: nextTrackId,
+						addedAt: Date.now(),
+					},
+				});
+			}
 		}
-	}, [isShuffling, queueTrackIds, audioRef]);
+	}, [trackNowPlaying, isShuffling, queueTrackIds, audioRef]);
 
 	const handleSkipToPreviousTrack = useCallback(() => {
 		onTogglePlaying({
 			isPlaying: false,
 		});
-		onSkipToPreviousTrack();
-	}, []);
+		const { previousTrackId } = onSkipToPreviousTrack();
+		if (trackNowPlaying) {
+			onAddTrackToPlaylistWithSlug({
+				slug: 'recently-played',
+				track: {
+					_id: generateId(),
+					trackId: previousTrackId,
+					addedAt: Date.now(),
+				},
+			});
+		}
+	}, [trackNowPlaying]);
 
 	const handleToggleShuffling = useCallback(() => {
 		onToggleShuffling({
@@ -137,6 +199,26 @@ export function usePlayerControls() {
 	const handleToggleRepeatMode = useCallback(() => {
 		onToggleRepeatMode();
 	}, []);
+
+	const handleToggleLikeTrack = useCallback(() => {
+		if (trackNowPlaying) {
+			if (!trackNowPlaying.isLiked) {
+				onAddTrackToPlaylistWithSlug({
+					slug: 'liked-tracks',
+					track: {
+						_id: generateId(),
+						trackId: trackNowPlaying.id,
+						addedAt: Date.now(),
+					},
+				});
+			} else {
+				onRemoveTrackFromPlaylistWithSlug({
+					slug: 'liked-tracks',
+					trackId: trackNowPlaying.id,
+				});
+			}
+		}
+	}, [trackNowPlaying]);
 
 	const handleChangeVolume = useCallback(
 		(newVolume: number) => {
@@ -151,7 +233,6 @@ export function usePlayerControls() {
 	);
 
 	const exportState = {
-		audioRef,
 		thumbnailRef,
 		trackNowPlaying,
 		duration,
@@ -164,6 +245,7 @@ export function usePlayerControls() {
 	};
 
 	const exportActions = {
+		handleSetAudioRef,
 		handleUpdateCurrentTime,
 		handlePlayerEnded,
 		handleChangeCurrentTime,
@@ -172,6 +254,7 @@ export function usePlayerControls() {
 		handleSkipToPreviousTrack,
 		handleToggleShuffling,
 		handleToggleRepeatMode,
+		handleToggleLikeTrack,
 		handleChangeVolume,
 		toggleMuteVolume,
 	};

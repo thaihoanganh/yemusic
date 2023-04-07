@@ -5,7 +5,7 @@ const HomePage: NextPage = () => {
 	const { device } = useTheme();
 
 	return (
-		<Frame horizontalPadding={device === 'desktop' ? 'large' : 'small'} verticalPadding="small">
+		<Frame horizontalPadding={device === 'desktop' ? 'large' : 'small'} verticalPadding="large">
 			<Categories />
 		</Frame>
 	);

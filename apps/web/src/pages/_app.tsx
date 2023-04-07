@@ -10,6 +10,7 @@ import {
 import {
 	CategoriesProvider,
 	PlayerControlsProvider,
+	PlaylistsProvider,
 	QueueProvider,
 	SearchProvider,
 	TracksProvider,
@@ -34,26 +35,28 @@ const _app = ({
 			</Head>
 			<ThemeProvider device={device}>
 				<TracksProvider>
-					<QueueProvider>
+					<PlaylistsProvider>
 						<CategoriesProvider>
-							<SearchProvider>
-								<PlayerControlsProvider>
-									<TrackContextMenuProvider>
-										{isMobile ? (
-											<MobileLayout>
-												<Component {...pageProps} />
-											</MobileLayout>
-										) : (
-											<DesktopLayout>
-												<Component {...pageProps} />
-											</DesktopLayout>
-										)}
-										<TrackContextMenu isMobile={isMobile} />
-									</TrackContextMenuProvider>
-								</PlayerControlsProvider>
-							</SearchProvider>
+							<QueueProvider>
+								<SearchProvider>
+									<PlayerControlsProvider>
+										<TrackContextMenuProvider>
+											{isMobile ? (
+												<MobileLayout>
+													<Component {...pageProps} />
+												</MobileLayout>
+											) : (
+												<DesktopLayout>
+													<Component {...pageProps} />
+												</DesktopLayout>
+											)}
+											<TrackContextMenu isMobile={isMobile} />
+										</TrackContextMenuProvider>
+									</PlayerControlsProvider>
+								</SearchProvider>
+							</QueueProvider>
 						</CategoriesProvider>
-					</QueueProvider>
+					</PlaylistsProvider>
 				</TracksProvider>
 			</ThemeProvider>
 		</Fragment>

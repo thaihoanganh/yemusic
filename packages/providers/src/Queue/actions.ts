@@ -47,11 +47,15 @@ export function onSkipToNextTrack({ isShuffling }: { isShuffling: boolean }) {
 	const { queueTrackIds, playedIds, currentTrackId } = getState();
 
 	if (!currentTrackId || playedIds.length >= queueTrackIds.length) {
-		return updateState(prevState => ({
+		updateState(prevState => ({
 			...prevState,
 			playedIds: [queueTrackIds[0]],
 			currentTrackId: queueTrackIds[0],
 		}));
+
+		return {
+			nextTrackId: queueTrackIds[0],
+		};
 	}
 
 	const currentTrackIndex = queueTrackIds.findIndex(id => id === currentTrackId);
@@ -67,6 +71,10 @@ export function onSkipToNextTrack({ isShuffling }: { isShuffling: boolean }) {
 		playedIds: [...prevState.playedIds, nextTrackId],
 		currentTrackId: nextTrackId,
 	}));
+
+	return {
+		nextTrackId,
+	};
 }
 
 export function onSkipToPreviousTrack() {
@@ -79,6 +87,10 @@ export function onSkipToPreviousTrack() {
 			playedIds: [queueTrackIds[0]],
 			currentTrackId: queueTrackIds[0],
 		}));
+
+		return {
+			previousTrackId: queueTrackIds[0],
+		};
 	} else {
 		const currentTrackPlayedIndex = playedIds.findIndex(id => id === currentTrackId);
 		const previousTrackId = currentTrackPlayedIndex > 0 ? playedIds[currentTrackPlayedIndex - 1] : queueTrackIds[0];
@@ -87,5 +99,9 @@ export function onSkipToPreviousTrack() {
 			...prevState,
 			currentTrackId: previousTrackId,
 		}));
+
+		return {
+			previousTrackId,
+		};
 	}
 }

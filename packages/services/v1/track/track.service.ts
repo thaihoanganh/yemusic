@@ -1,7 +1,7 @@
 import { BaseService } from '../base.service';
 
 import {
-	getSearchTracksResponseSchema,
+	getTracksResponseSchema,
 	getTrackInfoResponseSchema,
 	getTracksCategoriesResponseSchema,
 } from './track.schemas';
@@ -22,6 +22,19 @@ export class TrackService extends BaseService {
 		}
 	};
 
+	getTracksByIds = async ({ ids }: { ids: string[] }) => {
+		try {
+			const response = await this.httpClient.get(`tracks?ids=${ids.join(',')}`);
+			const { data } = getTracksResponseSchema.parse(response.data);
+
+			return data;
+		} catch (error) {
+			return {
+				items: [],
+			};
+		}
+	};
+
 	getTracKInfo = async ({ trackId }: { trackId: string }) => {
 		try {
 			const response = await this.httpClient.get(`tracks/${trackId}`);
@@ -38,7 +51,7 @@ export class TrackService extends BaseService {
 	searchTracks = async ({ query }: { query: string }) => {
 		try {
 			const response = await this.httpClient.get(`tracks?q=${query}`);
-			const { data } = getSearchTracksResponseSchema.parse(response.data);
+			const { data } = getTracksResponseSchema.parse(response.data);
 
 			return data;
 		} catch (error) {

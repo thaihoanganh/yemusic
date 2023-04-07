@@ -8,7 +8,7 @@ export const initialPlayerControlsState: IPlayerControlsEntity = {
 	isPlaying: false,
 	isShuffling: false,
 	repeatMode: 'none',
-	volume: 0.5,
+	volume: 0.75,
 	duration: 0,
 	currentTime: 0,
 	isMute: false,
