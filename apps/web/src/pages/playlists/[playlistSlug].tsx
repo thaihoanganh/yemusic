@@ -1,7 +1,16 @@
 import { useCallback, useContext, useMemo, useState } from 'react';
 
-import { Frame, Group, LoadingLayer, LoadingLayerProvider, Stack, TrackSecondary, useTheme } from '@yemusic/components';
-import { Typography, useTrackContextMenu } from '@yemusic/components';
+import {
+	Frame,
+	Group,
+	LoadingLayer,
+	LoadingLayerProvider,
+	Stack,
+	TrackSecondary,
+	Typography,
+	useTheme,
+	useTrackContextMenu,
+} from '@yemusic/components';
 import {
 	PlaylistsContext,
 	QueueContext,
@@ -16,7 +25,9 @@ import {
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 
-const LikedTracks = () => {
+import { NextPageWithLayoutComponents } from '../_app';
+
+const PlaylistPage: NextPageWithLayoutComponents = () => {
 	const { query } = useRouter();
 
 	const [isFetchingLikedTracks] = useState(false);
@@ -73,77 +84,77 @@ const LikedTracks = () => {
 	return (
 		<Frame horizontalPadding={device === 'desktop' ? 'large' : 'small'} verticalPadding="small">
 			<LoadingLayerProvider isLoading={isFetchingLikedTracks}>
-				<Stack spacing="large">
-					<Stack spacing="medium">
-						<Group alignItems="center" justifyContent="space-between">
-							<LoadingLayer loading="inherit">
-								<Typography
-									style={{
-										fontWeight: 600,
-									}}
-									variant="title"
-									size="large"
-									color="on-surface"
-								>
-									{playlist?.name}
-								</Typography>
-							</LoadingLayer>
-						</Group>
+				<Stack spacing="medium">
+					<Group alignItems="center" justifyContent="space-between">
+						<LoadingLayer loading="inherit">
+							<Typography
+								style={{
+									fontWeight: 600,
+								}}
+								variant="title"
+								size="large"
+								color="on-surface"
+							>
+								{playlist?.name}
+							</Typography>
+						</LoadingLayer>
+					</Group>
 
-						<Stack spacing="medium">
-							{isFetchingLikedTracks
-								? Array.from({
-										length: 20,
-								  }).map((_, index) => (
-										<div key={index}>
-											<TrackSecondary
-												key={index}
-												author="author"
-												duration={0}
-												id="id"
-												isLiked={false}
-												isVisibleDuration
-												thumbnail=""
-												title="title"
-											/>
-										</div>
-								  ))
-								: likedTracksDetails.map(track => (
+					<Stack spacing="medium">
+						{isFetchingLikedTracks
+							? Array.from({
+									length: 20,
+							  }).map((_, index) => (
+									<div key={index}>
 										<TrackSecondary
-											key={track.id}
-											author={track.author}
-											duration={track.duration}
-											id={track.id}
-											isLiked={track.isLiked}
-											isNowPlaying={track.id === currentTrackId}
+											key={index}
+											author="author"
+											duration={0}
+											id="id"
+											isLiked={false}
 											isVisibleDuration
-											thumbnail={track.thumbnail}
-											title={track.title}
-											onOpenTrackContextMenu={({ position }) => {
-												onOpenTrackContextMenu({
-													desktopPosition: position,
-													trackInfo: {
-														author: track.author,
-														id: track.id,
-														isInQueue: queueTrackIds.includes(track.id),
-														isLiked: track.isLiked,
-														isNowPlaying: track.id === currentTrackId,
-														thumbnail: track.thumbnail,
-														title: track.title,
-													},
-												});
-											}}
-											onToggleLikeTrack={() => handleToggleLikeTrack(track.id, !track.isLiked)}
-											onTogglePlaying={() => handleTogglePlaying(track.id)}
+											thumbnail=""
+											title="title"
 										/>
-								  ))}
-						</Stack>
+									</div>
+							  ))
+							: likedTracksDetails.map(track => (
+									<TrackSecondary
+										key={track.id}
+										author={track.author}
+										duration={track.duration}
+										id={track.id}
+										isLiked={track.isLiked}
+										isNowPlaying={track.id === currentTrackId}
+										isVisibleDuration
+										thumbnail={track.thumbnail}
+										title={track.title}
+										onOpenTrackContextMenu={({ position }) => {
+											onOpenTrackContextMenu({
+												desktopPosition: position,
+												trackInfo: {
+													author: track.author,
+													id: track.id,
+													isInQueue: queueTrackIds.includes(track.id),
+													isLiked: track.isLiked,
+													isNowPlaying: track.id === currentTrackId,
+													thumbnail: track.thumbnail,
+													title: track.title,
+												},
+											});
+										}}
+										onToggleLikeTrack={() => handleToggleLikeTrack(track.id, !track.isLiked)}
+										onTogglePlaying={() => handleTogglePlaying(track.id)}
+									/>
+							  ))}
 					</Stack>
 				</Stack>
 			</LoadingLayerProvider>
 		</Frame>
 	);
 };
+
+PlaylistPage.getLayoutComponents = () => ({});
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
@@ -155,4 +166,4 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	};
 };
 
-export default LikedTracks;
+export default PlaylistPage;

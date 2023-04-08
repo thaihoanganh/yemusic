@@ -1,7 +1,9 @@
-import { Categories, Frame, useTheme } from '@yemusic/components';
-import { GetServerSideProps, NextPage } from 'next';
+import { Categories, Frame, MobileHomeHeader, useTheme } from '@yemusic/components';
+import { GetServerSideProps } from 'next';
 
-const HomePage: NextPage = () => {
+import { NextPageWithLayoutComponents } from './_app';
+
+const HomePage: NextPageWithLayoutComponents = () => {
 	const { device } = useTheme();
 
 	return (
@@ -10,6 +12,10 @@ const HomePage: NextPage = () => {
 		</Frame>
 	);
 };
+
+HomePage.getLayoutComponents = () => ({
+	mobileHeader: <MobileHomeHeader />,
+});
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;

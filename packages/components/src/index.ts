@@ -12,6 +12,8 @@ export * from './organisms/Categories';
 export * from './organisms/DesktopAside';
 export * from './organisms/DesktopHeader';
 export * from './organisms/DesktopSidebar';
+export * from './organisms/MobileHeader';
+export * from './organisms/MobileNavigation';
 export * from './organisms/PlayerControls';
 export * from './organisms/Search';
 export * from './organisms/Track';

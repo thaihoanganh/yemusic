@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
+
+import { PlaylistsContext } from '@yemusic/providers';
+import { useRouter } from 'next/router';
 
 import { UnstyledButton } from '../../atoms/Button';
 import { Group } from '../../atoms/Frame';
@@ -7,11 +10,12 @@ import { Typography } from '../../atoms/Typography';
 
 import { mobileHeaderStyles } from './MobileHeader.css';
 
-export interface MobileHeaderProps {
-	title: string;
-}
+export const MobilePlaylistHeader = () => {
+	const router = useRouter();
+	const playlists = useContext(PlaylistsContext.Context);
 
-export const MobileHeader = ({ title }: MobileHeaderProps) => {
+	const playlist = playlists.find(playlist => playlist.slug === router.query.playlistSlug);
+
 	return (
 		<Group
 			className={mobileHeaderStyles.root}
@@ -23,10 +27,10 @@ export const MobileHeader = ({ title }: MobileHeaderProps) => {
 			<UnstyledButton>
 				<ArrowBackIcon />
 			</UnstyledButton>
-			<Typography variant="title">{title}</Typography>
+			<Typography variant="title">{playlist?.name}</Typography>
 			<div />
 		</Group>
 	);
 };
 
-export default MobileHeader;
+export default MobilePlaylistHeader;

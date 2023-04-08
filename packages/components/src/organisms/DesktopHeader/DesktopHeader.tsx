@@ -41,37 +41,35 @@ export const DesktopHeader = () => {
 	}
 
 	return (
-		<Paper color="background">
-			<Group
-				style={{
-					height: 72,
-				}}
-				spacing="medium"
-				alignItems="center"
-				horizontalPadding="large"
-			>
-				<Group spacing="medium" fillContainer>
-					<UnstyledButton disabled={!canGoBack} onClick={handleGoBack}>
-						<ArrowBackIcon color={canGoBack ? 'on-surface' : 'on-surface-variant'} />
-					</UnstyledButton>
-					<UnstyledButton disabled={!canGoForward} onClick={handleGoForward}>
-						<ArrowForwardIcon color={canGoForward ? 'on-surface' : 'on-surface-variant'} />
-					</UnstyledButton>
-					<DesktopSearch />
-				</Group>
-
-				<Group spacing="large">
-					<UnstyledButton>
-						<SettingsIcon />
-					</UnstyledButton>
-					<Link href="https://github.com/thaihoanganh/yemusic" target="_blank">
-						<UnstyledButton>
-							<GithubIcon size="small" />
-						</UnstyledButton>
-					</Link>
-				</Group>
+		<Group
+			style={{
+				height: 72,
+			}}
+			spacing="medium"
+			alignItems="center"
+			horizontalPadding="large"
+		>
+			<Group spacing="medium" fillContainer>
+				<UnstyledButton disabled={!canGoBack} onClick={handleGoBack}>
+					<ArrowBackIcon color={canGoBack ? 'on-surface' : 'on-surface-variant'} />
+				</UnstyledButton>
+				<UnstyledButton disabled={!canGoForward} onClick={handleGoForward}>
+					<ArrowForwardIcon color={canGoForward ? 'on-surface' : 'on-surface-variant'} />
+				</UnstyledButton>
+				<DesktopSearch />
 			</Group>
-		</Paper>
+
+			<Group spacing="large">
+				<UnstyledButton>
+					<SettingsIcon />
+				</UnstyledButton>
+				<Link href="https://github.com/thaihoanganh/yemusic" target="_blank">
+					<UnstyledButton>
+						<GithubIcon size="small" />
+					</UnstyledButton>
+				</Link>
+			</Group>
+		</Group>
 	);
 };
 

@@ -63,6 +63,7 @@ export const MobilePlayerControls = () => {
 			<audio
 				ref={handleSetAudioRef}
 				src={audioSrc}
+				title={trackNowPlaying?.title}
 				loop={repeatMode === 'one'}
 				onPause={() => handleTogglePlaying(false)}
 				onPlay={() => handleTogglePlaying(true)}

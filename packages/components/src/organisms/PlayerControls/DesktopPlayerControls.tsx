@@ -59,6 +59,7 @@ export const DesktopPlayerControls = () => {
 			<audio
 				ref={handleSetAudioRef}
 				src={audioSrc}
+				title={trackNowPlaying?.title}
 				loop={repeatMode === 'one'}
 				onPause={() => handleTogglePlaying(false)}
 				onPlay={() => handleTogglePlaying(true)}
