@@ -2,20 +2,23 @@ import { useContext, useEffect, useState } from 'react';
 
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { QueueContext } from '@yemusic/providers';
-import { useRouter } from 'next/router';
 
-import { Paper } from '../../atoms/Paper';
 import { ScrollArea } from '../../atoms/ScrollArea';
-import { MobileHomeHeader } from '../../organisms/MobileHeader';
-import MobileSearchHeader from '../../organisms/MobileHeader/MobileSearchHeader';
-import { MobileNavigation } from '../../organisms/MobileNavigation';
-import { MobilePlayerControls } from '../../organisms/PlayerControls';
 
-import { mobileLayoutStyles, screenHeightUnitVar } from './MobileLayout.css';
+import {
+	mobileBottomNavigationHeight,
+	mobileLayoutStyles,
+	mobilePlayerControllerHeight,
+	screenHeightUnitVar,
+} from './MobileLayout.css';
 
-export const MobileLayout = ({ children }: React.PropsWithChildren) => {
-	const { pathname } = useRouter();
+export interface MobileLayoutProps extends React.PropsWithChildren {
+	bottomNavigation?: React.ReactNode;
+	header?: React.ReactNode;
+	playerController?: React.ReactNode;
+}
 
+export const MobileLayout = ({ children, bottomNavigation, header, playerController }: MobileLayoutProps) => {
 	const [screenHeightUnitVarValue, setScreenHeightUnitVarValue] = useState('1vh');
 	const { currentTrackId } = useContext(QueueContext.Context);
 
@@ -33,9 +36,6 @@ export const MobileLayout = ({ children }: React.PropsWithChildren) => {
 		setScreenHeightUnitVarValue(`${vh}px`);
 	};
 
-	const isHomePage = pathname === '/';
-	const isSearchPage = pathname.startsWith('/search');
-
 	return (
 		<div
 			style={assignInlineVars({
@@ -43,31 +43,22 @@ export const MobileLayout = ({ children }: React.PropsWithChildren) => {
 			})}
 			className={mobileLayoutStyles.root}
 		>
-			<div className={mobileLayoutStyles.main}>
-				{isHomePage && <MobileHomeHeader />}
-				{isSearchPage && <MobileSearchHeader />}
-				<ScrollArea
-					style={{
-						paddingBottom: currentTrackId ? 168 : 112,
-					}}
-					fillContainer
-				>
-					{children}
-				</ScrollArea>
-			</div>
-			{currentTrackId && (
-				<div className={mobileLayoutStyles.playerControlerWrapper}>
-					<Paper color="primary-dynamic" surfaceLevel={1}>
-						<MobilePlayerControls />
-					</Paper>
+			<div
+				style={{
+					paddingBottom: currentTrackId
+						? mobileBottomNavigationHeight + mobilePlayerControllerHeight
+						: mobileBottomNavigationHeight,
+				}}
+				className={mobileLayoutStyles.main}
+			>
+				{header && <div className={mobileLayoutStyles.mainHeader}>{header}</div>}
+				<div className={mobileLayoutStyles.mainContent}>
+					<ScrollArea fillContainer>{children}</ScrollArea>
 				</div>
-			)}
-			<div className={mobileLayoutStyles.navigationWrapper}>
-				<Paper color="primary" surfaceLevel={1}>
-					<div className={mobileLayoutStyles.navigation}>
-						<MobileNavigation />
-					</div>
-				</Paper>
+			</div>
+			{currentTrackId && <div className={mobileLayoutStyles.playerController}>{playerController}</div>}
+			<div className={mobileLayoutStyles.bottomNavigation}>
+				<div className={mobileLayoutStyles.bottomNavigationInner}>{bottomNavigation}</div>
 			</div>
 		</div>
 	);

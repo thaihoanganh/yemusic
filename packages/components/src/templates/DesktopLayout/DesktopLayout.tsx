@@ -1,54 +1,63 @@
-import React, { useContext } from 'react';
+import React, { Fragment, useContext } from 'react';
 
 import { QueueContext } from '@yemusic/providers';
+import { motion } from 'framer-motion';
 
-import { DesktopAside } from '../../organisms/DesktopAside';
-import { DesktopHeader } from '../../organisms/DesktopHeader';
-import { DesktopSidebar } from '../../organisms/DesktopSidebar';
-import { DesktopPlayerControls } from '../../organisms/PlayerControls';
+import { ScrollArea } from '../../atoms/ScrollArea';
 
 import { asideWidth, desktopLayoutStyles, playerControlsHeight } from './DesktopLayout.css';
 
-export const DesktopLayout = ({ children }: React.PropsWithChildren) => {
+export interface DesktopLayout extends React.PropsWithChildren {
+	aside: React.ReactNode;
+	header: React.ReactNode;
+	sidebar: React.ReactNode;
+	playerControler: React.ReactNode;
+}
+
+export const DesktopLayout = ({ aside, children, header, sidebar, playerControler }: DesktopLayout) => {
 	const { currentTrackId } = useContext(QueueContext.Context);
 
+	const isVisiblePlayerControler = !!currentTrackId;
+
 	return (
-		<div className={desktopLayoutStyles.layout}>
-			<div className={desktopLayoutStyles.layoutRow}>
-				<div className={desktopLayoutStyles.layoutSidebarWrapper}>
-					<div className={desktopLayoutStyles.LayoutSidebar}>
-						<DesktopSidebar />
-					</div>
+		<Fragment>
+			<div
+				style={{
+					height: isVisiblePlayerControler ? `calc(100vh - ${playerControlsHeight}px)` : '100vh',
+				}}
+				className={desktopLayoutStyles.root}
+			>
+				<div className={desktopLayoutStyles.sidebar}>
+					<div className={desktopLayoutStyles.sidebarInner}>{sidebar}</div>
 				</div>
-				<div
-					style={{
-						height: currentTrackId ? `calc(100vh - ${playerControlsHeight}px)` : '100vh',
+				<div className={desktopLayoutStyles.main}>
+					<ScrollArea fillContainer visibleScrollbarOnHover>
+						<div className={desktopLayoutStyles.mainHeader}>{header}</div>
+						<div className={desktopLayoutStyles.mainContent}>{children}</div>
+					</ScrollArea>
+				</div>
+				<motion.div
+					initial={{
+						width: 0,
 					}}
-					className={desktopLayoutStyles.layoutMain}
-				>
-					<div className={desktopLayoutStyles.layoutMainHeader}>
-						<DesktopHeader />
-					</div>
-					<div className={desktopLayoutStyles.layoutMainContent}>{children}</div>
-				</div>
-				<div
-					style={{
+					animate={{
 						width: currentTrackId ? asideWidth : 0,
 						minWidth: currentTrackId ? asideWidth : 0,
+						transition: {
+							duration: 0.45,
+						},
 					}}
-					className={desktopLayoutStyles.layoutAside}
+					className={desktopLayoutStyles.aside}
 				>
-					<DesktopAside />
-				</div>
+					{aside}
+				</motion.div>
 			</div>
 			{currentTrackId && (
-				<div className={desktopLayoutStyles.sidebarControlsWrapper}>
-					<div className={desktopLayoutStyles.sidebarControls}>
-						<DesktopPlayerControls />
-					</div>
+				<div className={desktopLayoutStyles.playerControler}>
+					<div className={desktopLayoutStyles.playerControlerInner}>{playerControler}</div>
 				</div>
 			)}
-		</div>
+		</Fragment>
 	);
 };
 

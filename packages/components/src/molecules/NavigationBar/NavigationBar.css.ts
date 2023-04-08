@@ -1,11 +1,11 @@
 import { styleVariants } from '@vanilla-extract/css';
 
-import { mobileNavigationHeight } from '../../templates/MobileLayout/MobileLayout.css';
+import { mobileBottomNavigationHeight } from '../../templates/MobileLayout/MobileLayout.css';
 
 export const navigationBarStyles = styleVariants({
 	root: {
 		display: 'flex',
-		height: mobileNavigationHeight,
+		height: mobileBottomNavigationHeight,
 		margin: 0,
 		padding: 0,
 	},

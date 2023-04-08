@@ -1,8 +1,10 @@
 import { Frame, SearchResults, useTheme } from '@yemusic/components';
-import { GetServerSideProps, NextPage } from 'next';
+import MobileSearchHeader from '@yemusic/components/src/organisms/MobileHeader/MobileSearchHeader';
+import { GetServerSideProps } from 'next';
 
-const search: NextPage = () => {
-	// eslint-disable-next-line react-hooks/rules-of-hooks
+import { NextPageWithLayoutComponents } from './_app';
+
+const SearchPage: NextPageWithLayoutComponents = () => {
 	const { device } = useTheme();
 
 	const isDesktop = device === 'desktop';
@@ -14,6 +16,10 @@ const search: NextPage = () => {
 	);
 };
 
+SearchPage.getLayoutComponents = () => ({
+	mobileHeader: <MobileSearchHeader />,
+});
+
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
 
@@ -24,4 +30,4 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	};
 };
 
-export default search;
+export default SearchPage;

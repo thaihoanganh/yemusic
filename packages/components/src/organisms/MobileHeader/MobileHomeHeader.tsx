@@ -5,9 +5,16 @@ import { Group } from '../../atoms/Frame';
 import { SettingsIcon } from '../../atoms/Icons';
 import { Logo } from '../../atoms/Logo';
 
+import { mobileHeaderStyles } from './MobileHeader.css';
+
 export const MobileHomeHeader = () => {
 	return (
-		<Group justifyContent="space-between" horizontalPadding="small" verticalPadding="small">
+		<Group
+			className={mobileHeaderStyles.root}
+			justifyContent="space-between"
+			horizontalPadding="small"
+			verticalPadding="small"
+		>
 			<Link
 				style={{
 					textDecoration: 'none',

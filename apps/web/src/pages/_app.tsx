@@ -1,8 +1,14 @@
-import { Fragment } from 'react';
+import { useEffect } from 'react';
 
 import {
+	DesktopAside,
+	DesktopHeader,
 	DesktopLayout,
+	DesktopPlayerControls,
+	DesktopSidebar,
 	MobileLayout,
+	MobileNavigation,
+	MobilePlayerControls,
 	ThemeProvider,
 	TrackContextMenu,
 	TrackContextMenuProvider,
@@ -15,51 +21,71 @@ import {
 	SearchProvider,
 	TracksProvider,
 } from '@yemusic/providers';
+import { NextPage } from 'next';
 import { AppProps } from 'next/app';
-import Head from 'next/head';
 import '../../public/assets/styles/globals.css';
 
-const _app = ({
-	Component,
-	pageProps,
-}: AppProps<{
-	userAgent: string;
-}>) => {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type NextPageWithLayoutComponents<P = {}, IP = P> = NextPage<P, IP> & {
+	getLayoutComponents?: () => {
+		mobileHeader?: React.ReactNode;
+	};
+};
+
+type AppPropsWithLayout = AppProps & {
+	Component: NextPageWithLayoutComponents;
+};
+
+let didInit = false;
+const _app = ({ Component, pageProps }: AppPropsWithLayout) => {
+	useEffect(() => {
+		if (!didInit) {
+			didInit = true;
+			window.document.title = 'Yemusic';
+		}
+	}, []);
+
 	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(pageProps.userAgent);
 	const device = isMobile ? 'mobile' : 'desktop';
 
+	const mobileHeader = Component.getLayoutComponents ? Component.getLayoutComponents().mobileHeader : undefined;
+
 	return (
-		<Fragment>
-			<Head>
-				<title>Yemusic</title>
-			</Head>
-			<ThemeProvider device={device}>
-				<TracksProvider>
-					<PlaylistsProvider>
-						<CategoriesProvider>
-							<QueueProvider>
-								<SearchProvider>
-									<PlayerControlsProvider>
-										<TrackContextMenuProvider>
-											{isMobile ? (
-												<MobileLayout>
-													<Component {...pageProps} />
-												</MobileLayout>
-											) : (
-												<DesktopLayout>
-													<Component {...pageProps} />
-												</DesktopLayout>
-											)}
-											<TrackContextMenu isMobile={isMobile} />
-										</TrackContextMenuProvider>
-									</PlayerControlsProvider>
-								</SearchProvider>
-							</QueueProvider>
-						</CategoriesProvider>
-					</PlaylistsProvider>
-				</TracksProvider>
-			</ThemeProvider>
-		</Fragment>
+		<ThemeProvider device={device}>
+			<TracksProvider>
+				<PlaylistsProvider>
+					<CategoriesProvider>
+						<QueueProvider>
+							<SearchProvider>
+								<PlayerControlsProvider>
+									<TrackContextMenuProvider>
+										{isMobile ? (
+											<MobileLayout
+												bottomNavigation={<MobileNavigation />}
+												header={mobileHeader}
+												playerController={<MobilePlayerControls />}
+											>
+												<Component {...pageProps} />
+											</MobileLayout>
+										) : (
+											<DesktopLayout
+												aside={<DesktopAside />}
+												header={<DesktopHeader />}
+												playerControler={<DesktopPlayerControls />}
+												sidebar={<DesktopSidebar />}
+											>
+												<Component {...pageProps} />
+											</DesktopLayout>
+										)}
+										<TrackContextMenu isMobile={isMobile} />
+									</TrackContextMenuProvider>
+								</PlayerControlsProvider>
+							</SearchProvider>
+						</QueueProvider>
+					</CategoriesProvider>
+				</PlaylistsProvider>
+			</TracksProvider>
+		</ThemeProvider>
 	);
 };
 

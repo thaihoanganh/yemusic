@@ -1,4 +1,4 @@
-import { createVar, fallbackVar } from '@vanilla-extract/css';
+import { createVar, fallbackVar, globalStyle } from '@vanilla-extract/css';
 
 import { ThemeColors, themePaletteKeys, themeConfigs } from './theme.config';
 
@@ -37,3 +37,7 @@ export const themeVars = {
 	},
 	palette: themePaletteColors,
 };
+
+globalStyle('body', {
+	background: themeVars.palette.background,
+});

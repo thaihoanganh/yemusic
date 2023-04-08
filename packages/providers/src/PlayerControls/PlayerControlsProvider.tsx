@@ -23,8 +23,10 @@ export const PlayerControlsProvider = PlayerControlsContext.withProvider<PropsWi
 	useEffect(() => {
 		if (state.audioRef.current) {
 			if (state.isPlaying) {
+				window.document.title = state.audioRef.current.title;
 				state.audioRef.current.play();
 			} else {
+				window.document.title = 'Yemusic';
 				state.audioRef.current.pause();
 			}
 		}
