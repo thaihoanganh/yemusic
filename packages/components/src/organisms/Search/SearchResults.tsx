@@ -4,6 +4,7 @@ import {
 	generateId,
 	onAddTrackIdToQueueIds,
 	onAddTrackToPlaylistWithSlug,
+	onEditPlaylistWithSlug,
 	onRemoveTrackFromPlaylistWithSlug,
 	onSetCurrentTrackId,
 	onTogglePlaying,
@@ -13,6 +14,7 @@ import {
 	TracksContext,
 } from '@yemusic/providers';
 
+import { UnstyledButton } from '../../atoms/Button';
 import { Group, Stack } from '../../atoms/Frame';
 import { LoadingLayer, LoadingLayerProvider } from '../../atoms/LoadingLayer';
 import Typography from '../../atoms/Typography/Typography';
@@ -20,10 +22,10 @@ import { TrackSecondary } from '../Track';
 import { useTrackContextMenu } from '../Track/hooks';
 
 export const SearchResults = () => {
-	const playlists = useContext(PlaylistsContext.Context);
 	const tracks = useContext(TracksContext.Context);
-	const { isSearching, searchTerms, searchResultsIds } = useContext(SearchContext.Context);
+	const playlists = useContext(PlaylistsContext.Context);
 	const { queueTrackIds, currentTrackId } = useContext(QueueContext.Context);
+	const { isSearching, searchTerms, searchResultsIds } = useContext(SearchContext.Context);
 	const { onOpenTrackContextMenu } = useTrackContextMenu();
 
 	const searchResults = useMemo(() => {
@@ -38,7 +40,7 @@ export const SearchResults = () => {
 		const recentlySearched = playlists.find(playlist => playlist.slug === 'recently-searched');
 
 		if (recentlySearched) {
-			const playlistTrackIds = recentlySearched?.tracks.map(track => track.trackId).reverse() || [];
+			const playlistTrackIds = recentlySearched.tracks.map(track => track.trackId).reverse() || [];
 
 			return tracks
 				.filter(track => playlistTrackIds.includes(track.id))
@@ -127,12 +129,12 @@ export const SearchResults = () => {
 									>
 										<TrackSecondary
 											key={index}
-											author="author"
+											author="author-placeholder"
 											duration={0}
-											id="id"
+											id="id-placeholder"
 											isLiked={false}
 											thumbnail=""
-											title="title"
+											title="title-placeholder"
 										/>
 									</div>
 							  ))
@@ -169,7 +171,18 @@ export const SearchResults = () => {
 				</Stack>
 			</LoadingLayerProvider>
 		);
-	} else {
+	}
+
+	if (recentlySearchedTracks.length > 0) {
+		const handleClearRecentlySearchedTracks = () => {
+			onEditPlaylistWithSlug({
+				slug: 'recently-searched',
+				updatePlaylistData: {
+					tracks: [],
+				},
+			});
+		};
+
 		return (
 			<Stack spacing="medium">
 				<Group alignItems="center" justifyContent="space-between">
@@ -182,6 +195,12 @@ export const SearchResults = () => {
 					>
 						{recentlySearchedTracks.length > 0 ? 'Tìm kiếm gần đây' : null}
 					</Typography>
+
+					<UnstyledButton onClick={handleClearRecentlySearchedTracks}>
+						<Typography variant="label" size="medium" color="on-surface-variant">
+							Xoá
+						</Typography>
+					</UnstyledButton>
 				</Group>
 
 				<Stack spacing="medium">
@@ -218,6 +237,8 @@ export const SearchResults = () => {
 			</Stack>
 		);
 	}
+
+	return null;
 };
 
 export default SearchResults;
