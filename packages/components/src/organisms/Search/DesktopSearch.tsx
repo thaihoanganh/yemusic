@@ -1,16 +1,32 @@
+import { useRef } from 'react';
+
+import { useOnClickOutside } from '@yemusic/hooks';
 import classNames from 'classnames';
 
-import { SearchIcon } from '../../atoms/Icons';
+import { UnstyledButton } from '../../atoms/Button';
+import { CloseIcon, SearchIcon } from '../../atoms/Icons';
 import { typographyStyles } from '../../atoms/Typography/Typography.css';
 
 import { useSearch } from './hooks';
 import { desktopSearchStyles } from './Search.css';
 
 export const DesktopSearch = () => {
-	const { isFocused, searchTerms, handleToggleFocusSearchInput, handleChnageSearchTerms } = useSearch();
+	const searchRef = useRef<HTMLLabelElement>(null);
+	const { isFocused, searchTerms, handleToggleFocusSearchInput, handleChangeSearchTerms } = useSearch();
+
+	useOnClickOutside(searchRef, () => {
+		handleToggleFocusSearchInput(false);
+	});
+
+	const handleClear = () => {
+		handleChangeSearchTerms('');
+	};
 
 	return (
-		<label className={classNames(desktopSearchStyles.search, isFocused && desktopSearchStyles.searchFocused)}>
+		<label
+			className={classNames(desktopSearchStyles.search, isFocused && desktopSearchStyles.searchFocused)}
+			ref={searchRef}
+		>
 			<SearchIcon />
 			<input
 				className={classNames(desktopSearchStyles.searchInput, typographyStyles['body']['large'])}
@@ -18,9 +34,13 @@ export const DesktopSearch = () => {
 				placeholder="Tìm kiếm"
 				value={searchTerms}
 				onFocus={() => handleToggleFocusSearchInput(true)}
-				onBlur={() => handleToggleFocusSearchInput(false)}
-				onChange={e => handleChnageSearchTerms(e.target.value)}
+				onChange={e => handleChangeSearchTerms(e.target.value)}
 			/>
+			{isFocused && searchTerms && (
+				<UnstyledButton onClick={handleClear}>
+					<CloseIcon />
+				</UnstyledButton>
+			)}
 		</label>
 	);
 };

@@ -81,7 +81,7 @@ export function onEditPlaylist({
 	updatePlaylistData,
 }: {
 	playlistId: string;
-	updatePlaylistData: Partial<Pick<IPlaylistEntity, 'name' | 'isDefault'>>;
+	updatePlaylistData: Partial<Pick<IPlaylistEntity, 'name' | 'isDefault' | 'tracks'>>;
 }): void {
 	const { updateState } = PlaylistsContext;
 
@@ -89,6 +89,28 @@ export function onEditPlaylist({
 		const cloneState = [...prevState];
 
 		const playlist = cloneState.find(playlist => playlist._id === playlistId);
+
+		if (playlist) {
+			Object.assign(playlist, updatePlaylistData);
+		}
+
+		return cloneState;
+	});
+}
+
+export function onEditPlaylistWithSlug({
+	slug,
+	updatePlaylistData,
+}: {
+	slug: string;
+	updatePlaylistData: Partial<Pick<IPlaylistEntity, 'name' | 'isDefault' | 'tracks'>>;
+}): void {
+	const { updateState } = PlaylistsContext;
+
+	updateState(prevState => {
+		const cloneState = [...prevState];
+
+		const playlist = cloneState.find(playlist => playlist.slug === slug);
 
 		if (playlist) {
 			Object.assign(playlist, updatePlaylistData);

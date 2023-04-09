@@ -10,7 +10,7 @@ import {
 import { trackService } from '@yemusic/services/v1';
 import { useRouter } from 'next/router';
 
-const searchDelay = 850;
+const searchDelay = 1000;
 
 export function useSearch() {
 	const router = useRouter();
@@ -19,31 +19,34 @@ export function useSearch() {
 
 	const { isSearching, searchTerms } = useContext(SearchContext.Context);
 
-	const handleToggleFocusSearchInput = useCallback((isFocus: boolean) => {
-		if (isFocus) {
-			setIsFocused(true);
+	const handleToggleFocusSearchInput = useCallback(
+		(isFocus: boolean) => {
+			if (isFocus) {
+				setIsFocused(true);
 
-			if (!router.pathname.startsWith('/search')) {
-				router.push('/search');
+				if (!router.pathname.startsWith('/search')) {
+					router.push('/search');
+				}
+			} else {
+				setIsFocused(false);
 			}
-		} else {
-			setIsFocused(false);
-		}
+		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+		[router.pathname]
+	);
 
-	const handleChnageSearchTerms = useCallback((searchTerms: string) => {
+	const handleChangeSearchTerms = useCallback((searchTerms: string) => {
 		onChangeSearchTerms({
 			searchTerms,
 		});
 
 		if (debounceRef.current) {
 			clearTimeout(debounceRef.current);
-			if (isSearching) {
-				onSetIsSearching({
-					isSearching: false,
-				});
-			}
+		}
+		if (isSearching) {
+			onSetIsSearching({
+				isSearching: false,
+			});
 		}
 
 		debounceRef.current = setTimeout(() => {
@@ -54,7 +57,7 @@ export function useSearch() {
 
 				trackService
 					.searchTracks({
-						query: searchTerms,
+						query: searchTerms.trim(),
 					})
 					.then(res => {
 						onAddTracks({
@@ -90,6 +93,6 @@ export function useSearch() {
 		isSearching,
 		searchTerms,
 		handleToggleFocusSearchInput,
-		handleChnageSearchTerms,
+		handleChangeSearchTerms,
 	};
 }

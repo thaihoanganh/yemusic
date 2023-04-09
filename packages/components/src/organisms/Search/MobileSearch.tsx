@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 
+import useOnClickOutside from '@yemusic/hooks/src/use-on-click-outside';
 import classNames from 'classnames';
 
 import { UnstyledButton } from '../../atoms/Button';
@@ -11,28 +12,23 @@ import { useSearch } from './hooks';
 import { mobileSearch } from './Search.css';
 
 export const MobileSearch = () => {
-	const inputRef = useRef<HTMLInputElement>(null);
-	const { isFocused, searchTerms, handleToggleFocusSearchInput, handleChnageSearchTerms } = useSearch();
+	const searchInputRef = useRef<HTMLInputElement>(null);
+	const searchRef = useRef<HTMLLabelElement>(null);
+	const { isFocused, searchTerms, handleToggleFocusSearchInput, handleChangeSearchTerms } = useSearch();
+
+	useOnClickOutside(searchRef, () => {
+		handleToggleFocusSearchInput(false);
+	});
 
 	const handleClear = () => {
-		if (inputRef.current) {
-			handleChnageSearchTerms('');
-			inputRef.current.focus();
-		}
+		handleChangeSearchTerms('');
 	};
 
 	const handleFocus = () => {
-		if (inputRef.current) {
+		if (searchInputRef.current) {
 			handleToggleFocusSearchInput(true);
-			inputRef.current.focus();
+			searchInputRef.current.focus();
 		}
-	};
-
-	const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-		if (isFocused && e.target.parentElement?.tagName === 'LABEL') {
-			return;
-		}
-		handleToggleFocusSearchInput(false);
 	};
 
 	return (
@@ -46,16 +42,15 @@ export const MobileSearch = () => {
 					<SearchIcon />
 				</UnstyledButton>
 			)}
-			<label id="mobile-search" className={classNames(mobileSearch.root)}>
+			<label id="mobile-search" className={classNames(mobileSearch.root)} ref={searchRef}>
 				<input
-					ref={inputRef}
+					ref={searchInputRef}
 					className={classNames(mobileSearch.searchInput, typographyStyles['body']['large'])}
 					type="text"
 					placeholder="Tìm kiếm"
 					value={searchTerms}
 					onFocus={() => handleToggleFocusSearchInput(true)}
-					onBlur={handleBlur}
-					onChange={e => handleChnageSearchTerms(e.target.value)}
+					onChange={e => handleChangeSearchTerms(e.target.value)}
 				/>
 				{isFocused && searchTerms && (
 					<UnstyledButton onClick={handleClear}>
