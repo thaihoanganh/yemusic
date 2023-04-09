@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { UnstyledButton } from '../../atoms/Button';
 import { Group } from '../../atoms/Frame';
-import { SettingsIcon } from '../../atoms/Icons';
+import GithubIcon from '../../atoms/Icons/GithubIcon';
 import { Logo } from '../../atoms/Logo';
 
 import { mobileHeaderStyles } from './MobileHeader.css';
@@ -24,9 +24,20 @@ export const MobileHomeHeader = () => {
 				<Logo />
 			</Link>
 
-			<UnstyledButton>
-				<SettingsIcon />
-			</UnstyledButton>
+			<Group spacing="large">
+				<Link
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+					}}
+					href="https://github.com/thaihoanganh/yemusic"
+					target="_blank"
+				>
+					<UnstyledButton>
+						<GithubIcon size="small" />
+					</UnstyledButton>
+				</Link>
+			</Group>
 		</Group>
 	);
 };

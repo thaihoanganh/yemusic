@@ -5,9 +5,8 @@ import { useRouter } from 'next/router';
 
 import { UnstyledButton } from '../../atoms/Button';
 import { Group } from '../../atoms/Frame';
-import { ArrowBackIcon, ArrowForwardIcon, SettingsIcon } from '../../atoms/Icons';
+import { ArrowBackIcon, ArrowForwardIcon } from '../../atoms/Icons';
 import GithubIcon from '../../atoms/Icons/GithubIcon';
-import { Paper } from '../../atoms/Paper';
 import { DesktopSearch } from '../Search/DesktopSearch';
 
 export const DesktopHeader = () => {
@@ -60,9 +59,6 @@ export const DesktopHeader = () => {
 			</Group>
 
 			<Group spacing="large">
-				<UnstyledButton>
-					<SettingsIcon />
-				</UnstyledButton>
 				<Link href="https://github.com/thaihoanganh/yemusic" target="_blank">
 					<UnstyledButton>
 						<GithubIcon size="small" />
