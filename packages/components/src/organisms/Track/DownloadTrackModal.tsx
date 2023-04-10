@@ -21,7 +21,7 @@ export const DownloadTrackModal = () => {
 	const track = tracks.find(track => track.id === trackId);
 
 	useEffect(() => {
-		if (isOpenModalDownloadTrack && trackId && !track?.audio) {
+		if (isOpenModalDownloadTrack && trackId && !track?.audio.length) {
 			setIsFetching(true);
 
 			trackService
@@ -35,7 +35,9 @@ export const DownloadTrackModal = () => {
 					});
 				})
 				.finally(() => {
-					setIsFetching(false);
+					setTimeout(() => {
+						setIsFetching(false);
+					}, 500);
 				});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -98,10 +100,10 @@ export const DownloadTrackModal = () => {
 				</Group>
 
 				<Stack spacing="xsmall" alignItems="center">
-					<Typography variant="body" size="medium">
+					<Typography variant="body" size="medium" textAlign="center">
 						{track?.title}
 					</Typography>
-					<Typography variant="body" size="medium">
+					<Typography variant="body" size="medium" textAlign="center">
 						{track?.author}
 					</Typography>
 				</Stack>

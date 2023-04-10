@@ -1,18 +1,24 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 
-import { onAddTrackIdToQueueIds, onRemoveTrackIdFromQueueIds } from '@yemusic/providers';
+import {
+	generateId,
+	onAddTrackIdToQueueIds,
+	onAddTrackToPlaylistWithSlug,
+	onRemoveTrackFromPlaylistWithSlug,
+	onRemoveTrackIdFromQueueIds,
+} from '@yemusic/providers';
 import Image from 'next/image';
 
 import { UnstyledButton } from '../../atoms/Button';
 import { Divider } from '../../atoms/Divider';
 import Frame, { Group, Stack } from '../../atoms/Frame';
-import { FavoriteFillIcon, FavoriteIcon, PlaylistPlayIcon, PlaylistRemoveIcon } from '../../atoms/Icons';
+import { DownloadIcon, FavoriteFillIcon, FavoriteIcon, PlaylistPlayIcon, PlaylistRemoveIcon } from '../../atoms/Icons';
 import { LoadingLayer } from '../../atoms/LoadingLayer';
 import { Paper } from '../../atoms/Paper';
 import { StateLayer } from '../../atoms/StateLayer';
 import Typography from '../../atoms/Typography/Typography';
 
-import { useTrackContextMenu } from './hooks';
+import { useDownloadTrack, useTrackContextMenu } from './hooks';
 import { trackContextMenuStyles } from './Track.css';
 
 export interface TrackContextMenuProps {
@@ -22,11 +28,12 @@ export interface TrackContextMenuProps {
 const trackContextMenuWidth = 280;
 
 export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
+	const { desktopPosition, isOpen, trackInfo, onCloseTrackContextMenu } = useTrackContextMenu();
+	const { onOpenModalDownloadTrack } = useDownloadTrack();
+
 	const trackContextMenuRef = useRef<HTMLDivElement>(null);
 	const [trackContextMenuHeight, setTrackContextMenuHeight] = useState<number>(0);
 	const [isLoadingThumbnail, setIsLoadingThumbnail] = useState(false);
-
-	const { desktopPosition, isOpen, trackInfo, onCloseTrackContextMenu } = useTrackContextMenu();
 
 	useEffect(() => {
 		if (isOpen && trackContextMenuRef.current) {
@@ -84,6 +91,34 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 			}
 		}
 
+		const handleToggleLikeTrack = (trackId: string, isLike: boolean) => {
+			if (isLike) {
+				onAddTrackToPlaylistWithSlug({
+					slug: 'liked-tracks',
+					track: {
+						_id: generateId(),
+						trackId,
+						addedAt: Date.now(),
+					},
+				});
+			} else {
+				onRemoveTrackFromPlaylistWithSlug({
+					slug: 'liked-tracks',
+					trackId,
+				});
+			}
+			handleCloseContextMenu();
+		};
+
+		const handleDownloadTrack = () => {
+			if (trackInfo) {
+				onOpenModalDownloadTrack({
+					trackId: trackInfo.id,
+				});
+				handleCloseContextMenu();
+			}
+		};
+
 		return (
 			<div className={trackContextMenuStyles.modal}>
 				<div className={trackContextMenuStyles.modalMask} onClick={handleCloseContextMenu}>
@@ -133,7 +168,7 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 													spacing="small"
 													alignItems="center"
 													horizontalPadding="small"
-													verticalPadding="xsmall"
+													verticalPadding={isMobile ? 'small' : 'xsmall'}
 												>
 													<PlaylistRemoveIcon />
 													<Typography variant="body">Xoá khỏi danh sách phát</Typography>
@@ -150,7 +185,7 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 													spacing="small"
 													alignItems="center"
 													horizontalPadding="small"
-													verticalPadding="xsmall"
+													verticalPadding={isMobile ? 'small' : 'xsmall'}
 												>
 													<PlaylistPlayIcon />
 													<Typography variant="body">Thêm vào danh sách phát</Typography>
@@ -158,7 +193,7 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 											</StateLayer>
 										</UnstyledButton>
 									)}
-									<UnstyledButton>
+									<UnstyledButton onClick={() => handleToggleLikeTrack(trackInfo.id, !trackInfo.isLiked)}>
 										<StateLayer color="primary" state={isMobile ? [] : ['hover']}>
 											<Group
 												style={{
@@ -167,10 +202,28 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 												spacing="small"
 												alignItems="center"
 												horizontalPadding="small"
-												verticalPadding="xsmall"
+												verticalPadding={isMobile ? 'small' : 'xsmall'}
 											>
 												{trackInfo.isLiked ? <FavoriteFillIcon /> : <FavoriteIcon />}
-												<Typography variant="body">Thêm vào danh sách yêu thích</Typography>
+												<Typography variant="body">
+													{trackInfo.isLiked ? 'Xoá khỏi danh sách yêu thích' : 'Thêm vào danh sách yêu thích'}
+												</Typography>
+											</Group>
+										</StateLayer>
+									</UnstyledButton>
+									<UnstyledButton onClick={handleDownloadTrack}>
+										<StateLayer color="primary" state={isMobile || trackInfo.isNowPlaying ? [] : ['hover']}>
+											<Group
+												style={{
+													width: trackContextMenuWidth,
+												}}
+												spacing="small"
+												alignItems="center"
+												horizontalPadding="small"
+												verticalPadding={isMobile ? 'small' : 'xsmall'}
+											>
+												<DownloadIcon />
+												<Typography variant="body">Tải xuống</Typography>
 											</Group>
 										</StateLayer>
 									</UnstyledButton>
