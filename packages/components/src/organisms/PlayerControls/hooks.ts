@@ -21,6 +21,7 @@ import {
 import { trackService } from '@yemusic/services/v1';
 
 import { useTheme } from '../../Theme';
+import { useDownloadTrack } from '../Track';
 
 export function usePlayerControls() {
 	const tracks = useContext(TracksContext.Context);
@@ -29,6 +30,7 @@ export function usePlayerControls() {
 	);
 	const { currentTrackId, queueTrackIds } = useContext(QueueContext.Context);
 	const { onSetDynamicThemeFromImage } = useTheme();
+	const { onOpenModalDownloadTrack } = useDownloadTrack();
 
 	const thumbnailRef = useRef<null | HTMLImageElement>(null);
 
@@ -220,6 +222,15 @@ export function usePlayerControls() {
 		}
 	}, [trackNowPlaying]);
 
+	const handleDownloadTrack = useCallback(() => {
+		if (trackNowPlaying) {
+			onOpenModalDownloadTrack({
+				trackId: trackNowPlaying.id,
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [trackNowPlaying]);
+
 	const handleChangeVolume = useCallback(
 		(newVolume: number) => {
 			if (audioRef.current) {
@@ -256,6 +267,7 @@ export function usePlayerControls() {
 		handleToggleRepeatMode,
 		handleToggleLikeTrack,
 		handleChangeVolume,
+		handleDownloadTrack,
 		toggleMuteVolume,
 	};
 

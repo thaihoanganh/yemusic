@@ -48,6 +48,7 @@ export const DesktopPlayerControls = () => {
 		handleToggleRepeatMode,
 		handleToggleLikeTrack,
 		handleChangeVolume,
+		handleDownloadTrack,
 		toggleMuteVolume,
 	} = usePlayerControls();
 
@@ -146,7 +147,7 @@ export const DesktopPlayerControls = () => {
 				</div>
 
 				<div className={desktopPlayerControlsStyles.trackMore}>
-					<UnstyledButton>
+					<UnstyledButton onClick={handleDownloadTrack}>
 						<DownloadIcon size="medium" color="on-surface-variant-dynamic" />
 					</UnstyledButton>
 					<Group spacing="xsmall" alignItems="center">

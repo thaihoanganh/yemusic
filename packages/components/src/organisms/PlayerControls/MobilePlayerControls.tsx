@@ -53,6 +53,7 @@ export const MobilePlayerControls = () => {
 		handleSkipToPreviousTrack,
 		handleToggleShuffling,
 		handleToggleRepeatMode,
+		handleDownloadTrack,
 		handleToggleLikeTrack,
 	} = usePlayerControls();
 
@@ -381,7 +382,7 @@ export const MobilePlayerControls = () => {
 								</Group>
 
 								<Group justifyContent="space-between" horizontalPadding="medium" verticalPadding="medium">
-									<UnstyledButton>
+									<UnstyledButton onClick={handleDownloadTrack}>
 										<DownloadIcon />
 									</UnstyledButton>
 
