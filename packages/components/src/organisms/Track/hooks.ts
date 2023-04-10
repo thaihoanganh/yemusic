@@ -1,6 +1,39 @@
 import { useContext } from 'react';
 
+import { DownloadTrackContext } from './DownloadTrackProvider';
 import { TrackContextMenuContext } from './TrackContextMenuProvider';
+
+export function useDownloadTrack() {
+	const downloadTrackContext = useContext(DownloadTrackContext);
+
+	if (!downloadTrackContext) {
+		throw new Error('useDownloadTrack must be used within a DownloadTrackProvider');
+	}
+
+	const { downloadTrackState, setDownloadTrackState } = downloadTrackContext;
+
+	const onOpenModalDownloadTrack = ({ trackId }: { trackId: string }) => {
+		setDownloadTrackState(prevState => ({
+			...prevState,
+			isOpenModalDownloadTrack: true,
+			trackId,
+		}));
+	};
+
+	const onCloseModalDownloadTrack = () => {
+		setDownloadTrackState(prevState => ({
+			...prevState,
+			isOpenModalDownloadTrack: false,
+			trackId: null,
+		}));
+	};
+
+	return {
+		...downloadTrackState,
+		onOpenModalDownloadTrack,
+		onCloseModalDownloadTrack,
+	};
+}
 
 export function useTrackContextMenu() {
 	const trackContextMenuContext = useContext(TrackContextMenuContext);

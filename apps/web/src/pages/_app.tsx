@@ -6,6 +6,8 @@ import {
 	DesktopLayout,
 	DesktopPlayerControls,
 	DesktopSidebar,
+	DownloadTrackModal,
+	DownloadTrackProvider,
 	MobileLayout,
 	MobileNavigation,
 	MobilePlayerControls,
@@ -58,27 +60,30 @@ const _app = ({ Component, pageProps }: AppPropsWithLayout) => {
 						<QueueProvider>
 							<SearchProvider>
 								<PlayerControlsProvider>
-									<TrackContextMenuProvider>
-										{isMobile ? (
-											<MobileLayout
-												bottomNavigation={<MobileNavigation />}
-												header={mobileHeader}
-												playerController={<MobilePlayerControls />}
-											>
-												<Component {...pageProps} />
-											</MobileLayout>
-										) : (
-											<DesktopLayout
-												aside={<DesktopAside />}
-												header={<DesktopHeader />}
-												playerControler={<DesktopPlayerControls />}
-												sidebar={<DesktopSidebar />}
-											>
-												<Component {...pageProps} />
-											</DesktopLayout>
-										)}
-										<TrackContextMenu isMobile={isMobile} />
-									</TrackContextMenuProvider>
+									<DownloadTrackProvider>
+										<TrackContextMenuProvider>
+											{isMobile ? (
+												<MobileLayout
+													bottomNavigation={<MobileNavigation />}
+													header={mobileHeader}
+													playerController={<MobilePlayerControls />}
+												>
+													<Component {...pageProps} />
+												</MobileLayout>
+											) : (
+												<DesktopLayout
+													aside={<DesktopAside />}
+													header={<DesktopHeader />}
+													playerControler={<DesktopPlayerControls />}
+													sidebar={<DesktopSidebar />}
+												>
+													<Component {...pageProps} />
+												</DesktopLayout>
+											)}
+											<DownloadTrackModal />
+											<TrackContextMenu isMobile={isMobile} />
+										</TrackContextMenuProvider>
+									</DownloadTrackProvider>
 								</PlayerControlsProvider>
 							</SearchProvider>
 						</QueueProvider>
