@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { UnstyledButton } from '../../atoms/Button';
 import { Group, Stack } from '../../atoms/Frame';
-import { FavoriteFillIcon, FavoriteIcon, MoreHorizIcon, MoreVertIcon, PlayCircleFillIcon } from '../../atoms/Icons';
+import { FavoriteFillIcon, FavoriteIcon, MoreHorizIcon, MoreVertIcon, PlayCircleIcon } from '../../atoms/Icons';
 import { LoadingLayer } from '../../atoms/LoadingLayer';
 import { Paper } from '../../atoms/Paper';
 import { StateLayer } from '../../atoms/StateLayer';
@@ -127,7 +127,7 @@ export const TrackSecondary = ({
 												alignItems="center"
 											>
 												<UnstyledButton onClick={onTogglePlaying}>
-													<PlayCircleFillIcon size="xlarge" color={isNowPlaying ? 'primary-dynamic' : 'primary'} />
+													<PlayCircleIcon size="xlarge" color={isNowPlaying ? 'primary-dynamic' : 'primary'} />
 												</UnstyledButton>
 											</Group>
 										</Paper>
