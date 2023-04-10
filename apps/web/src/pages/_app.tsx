@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 
 import {
 	DesktopAside,
@@ -25,7 +25,11 @@ import {
 } from '@yemusic/providers';
 import { NextPage } from 'next';
 import { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
+import Script from 'next/script';
 import '../../public/assets/styles/globals.css';
+
+import * as gtag from '../lib/gtag';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayoutComponents<P = {}, IP = P> = NextPage<P, IP> & {
@@ -40,6 +44,18 @@ type AppPropsWithLayout = AppProps & {
 
 let didInit = false;
 const _app = ({ Component, pageProps }: AppPropsWithLayout) => {
+	const router = useRouter();
+
+	useEffect(() => {
+		const handleRouteChange = (url: string) => {
+			gtag.pageview(url);
+		};
+		router.events.on('routeChangeComplete', handleRouteChange);
+		return () => {
+			router.events.off('routeChangeComplete', handleRouteChange);
+		};
+	}, [router.events]);
+
 	useEffect(() => {
 		if (!didInit) {
 			didInit = true;
@@ -53,44 +69,64 @@ const _app = ({ Component, pageProps }: AppPropsWithLayout) => {
 	const mobileHeader = Component.getLayoutComponents ? Component.getLayoutComponents().mobileHeader : undefined;
 
 	return (
-		<ThemeProvider device={device}>
-			<TracksProvider>
-				<PlaylistsProvider>
-					<CategoriesProvider>
-						<QueueProvider>
-							<SearchProvider>
-								<PlayerControlsProvider>
-									<DownloadTrackProvider>
-										<TrackContextMenuProvider>
-											{isMobile ? (
-												<MobileLayout
-													bottomNavigation={<MobileNavigation />}
-													header={mobileHeader}
-													playerController={<MobilePlayerControls />}
-												>
-													<Component {...pageProps} />
-												</MobileLayout>
-											) : (
-												<DesktopLayout
-													aside={<DesktopAside />}
-													header={<DesktopHeader />}
-													playerControler={<DesktopPlayerControls />}
-													sidebar={<DesktopSidebar />}
-												>
-													<Component {...pageProps} />
-												</DesktopLayout>
-											)}
-											<DownloadTrackModal />
-											<TrackContextMenu isMobile={isMobile} />
-										</TrackContextMenuProvider>
-									</DownloadTrackProvider>
-								</PlayerControlsProvider>
-							</SearchProvider>
-						</QueueProvider>
-					</CategoriesProvider>
-				</PlaylistsProvider>
-			</TracksProvider>
-		</ThemeProvider>
+		<Fragment>
+			<script
+				dangerouslySetInnerHTML={{
+					__html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', '${gtag.GOOGLE_ANALYTICS_TRACKING_ID}', {
+                page_path: window.location.pathname,
+              });
+            `,
+				}}
+			/>
+			<Script
+				strategy="afterInteractive"
+				src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GOOGLE_ANALYTICS_TRACKING_ID}`}
+			/>
+
+			<ThemeProvider device={device}>
+				<TracksProvider>
+					<PlaylistsProvider>
+						<CategoriesProvider>
+							<QueueProvider>
+								<SearchProvider>
+									<PlayerControlsProvider>
+										<DownloadTrackProvider>
+											<TrackContextMenuProvider>
+												{isMobile ? (
+													<MobileLayout
+														bottomNavigation={<MobileNavigation />}
+														header={mobileHeader}
+														playerController={<MobilePlayerControls />}
+													>
+														<Component {...pageProps} />
+													</MobileLayout>
+												) : (
+													<DesktopLayout
+														aside={<DesktopAside />}
+														header={<DesktopHeader />}
+														playerControler={<DesktopPlayerControls />}
+														sidebar={<DesktopSidebar />}
+													>
+														<Component {...pageProps} />
+													</DesktopLayout>
+												)}
+												<DownloadTrackModal />
+												<TrackContextMenu isMobile={isMobile} />
+											</TrackContextMenuProvider>
+										</DownloadTrackProvider>
+									</PlayerControlsProvider>
+								</SearchProvider>
+							</QueueProvider>
+						</CategoriesProvider>
+					</PlaylistsProvider>
+				</TracksProvider>
+			</ThemeProvider>
+		</Fragment>
 	);
 };
 
