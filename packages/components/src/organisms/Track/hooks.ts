@@ -1,5 +1,14 @@
 import { useContext } from 'react';
 
+import {
+	generateId,
+	onAddTrackToPlaylist,
+	onAddTracksToQueue,
+	onRemoveTrackFromPlaylist,
+	onSetCurrentTrack,
+	onTogglePlaying,
+} from '@yemusic/providers';
+
 import { DownloadTrackContext } from './DownloadTrackProvider';
 import { TrackContextMenuContext } from './TrackContextMenuProvider';
 
@@ -60,6 +69,7 @@ export function useTrackContextMenu() {
 			isNowPlaying: boolean;
 			thumbnail: string;
 			title: string;
+			ref?: string;
 		};
 	}) => {
 		setTrackContextMenuState(prevState => ({
@@ -83,5 +93,50 @@ export function useTrackContextMenu() {
 		...trackContextMenuState,
 		onOpenTrackContextMenu,
 		onCloseTrackContextMenu,
+	};
+}
+
+export function useTrack() {
+	const handleTogglePlaying = ({ trackId }: { trackId: string }) => {
+		onTogglePlaying({
+			isPlaying: false,
+		});
+		onAddTracksToQueue({
+			trackIds: [trackId],
+		});
+		onSetCurrentTrack({
+			trackId,
+		});
+		onAddTrackToPlaylist({
+			slug: 'recently-played',
+			track: {
+				_id: generateId(),
+				trackId,
+				addedAt: Date.now(),
+			},
+		});
+	};
+
+	const handleToggleLikeTrack = ({ trackId, isLike }: { trackId: string; isLike: boolean }) => {
+		if (isLike) {
+			onAddTrackToPlaylist({
+				slug: 'liked-tracks',
+				track: {
+					_id: generateId(),
+					trackId,
+					addedAt: Date.now(),
+				},
+			});
+		} else {
+			onRemoveTrackFromPlaylist({
+				slug: 'liked-tracks',
+				trackId,
+			});
+		}
+	};
+
+	return {
+		handleTogglePlaying,
+		handleToggleLikeTrack,
 	};
 }

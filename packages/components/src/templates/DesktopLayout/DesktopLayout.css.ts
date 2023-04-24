@@ -40,6 +40,10 @@ export const desktopLayoutStyles = styleVariants({
 	},
 	mainContent: {
 		flexGrow: 1,
+		paddingTop: themeVars.spacing.xsmall,
+		paddingBottom: themeVars.spacing.xsmall,
+		paddingRight: themeVars.spacing.large,
+		paddingLeft: themeVars.spacing.large,
 	},
 	aside: {
 		borderLeft: `1px solid ${themeVars.palette['outline-variant']}`,

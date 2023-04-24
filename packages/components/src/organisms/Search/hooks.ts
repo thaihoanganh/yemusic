@@ -7,7 +7,7 @@ import {
 	onSetSearchResultsIds,
 	SearchContext,
 } from '@yemusic/providers';
-import { trackService } from '@yemusic/services/v1';
+import { searchService } from '@yemusic/services/v1';
 import { useRouter } from 'next/router';
 
 const searchDelay = 1000;
@@ -55,7 +55,7 @@ export function useSearch() {
 					isSearching: true,
 				});
 
-				trackService
+				searchService
 					.searchTracks({
 						query: searchTerms.trim(),
 					})
@@ -68,10 +68,12 @@ export function useSearch() {
 								thumbnail: result.thumbnail,
 								duration: result.duration,
 								source: [],
-								audio: [],
 								isLiked: false,
 								isLoadingAudio: false,
 								isNowPlaying: false,
+								captions: [],
+								audioFormats: [],
+								trackingId: res.trackingId,
 							})),
 						});
 						onSetSearchResultsIds({

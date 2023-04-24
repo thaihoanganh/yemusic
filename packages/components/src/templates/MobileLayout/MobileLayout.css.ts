@@ -27,6 +27,11 @@ export const mobileLayoutStyles = styleVariants({
 		overflowY: 'auto',
 		flexGrow: 1,
 	},
+	mainContentInner: {
+		paddingTop: themeVars.spacing.small,
+		paddingBottom: themeVars.spacing.small,
+		paddingLeft: themeVars.spacing.small,
+	},
 	playerController: {
 		position: 'absolute',
 		bottom: mobileBottomNavigationHeight,

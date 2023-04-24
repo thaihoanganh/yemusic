@@ -1,57 +1,64 @@
-import { Fragment, PropsWithChildren, useEffect } from 'react';
+import { Fragment, PropsWithChildren, useContext, useEffect } from 'react';
 
+import { useAsync } from '@yemusic/hooks';
 import { categoriesService } from '@yemusic/services/v1';
 
 import createSingletonAppContext from '../createSingletonAppContext';
+import { PlaylistsContext } from '../Playlists';
 import { onAddTracks } from '../Tracks';
 
 import { onSetIsFetchingCategories, onSetTrendingTrackIds } from './actions';
-import { ICategoriesEntity } from './entity';
+
+export interface ICategoriesEntity {
+	isFetchingCategories: boolean;
+	trending: string[];
+}
 
 export const initialCategoriesState: ICategoriesEntity = {
-	isFetchingCategories: false,
+	isFetchingCategories: true,
 	trending: [],
 };
 
 export const CategoriesContext = createSingletonAppContext<ICategoriesEntity>(initialCategoriesState);
 
 export const CategoriesProvider = CategoriesContext.withProvider(({ children }: PropsWithChildren) => {
-	useEffect(() => {
-		onSetIsFetchingCategories({
-			isFetching: true,
-		});
+	const { isFetchingInitialPlaylists } = useContext(PlaylistsContext.Context);
 
-		categoriesService
-			.getTracksCategories()
-			.then(data => {
-				setTimeout(() => {
-					onAddTracks({
-						newTracks: data.trending.items.map(track => ({
-							id: track.id,
-							title: track.title,
-							author: track.author,
-							thumbnail: track.thumbnail,
-							duration: track.duration,
-							source: [],
-							audio: [],
-							isLiked: false,
-							isLoadingAudio: false,
-							isNowPlaying: false,
-						})),
-					});
-					onSetTrendingTrackIds({
-						trackIds: data.trending.items.map(track => track.id),
-					});
-				}, 100);
-			})
-			.finally(() => {
-				setTimeout(() => {
-					onSetIsFetchingCategories({
-						isFetching: false,
-					});
-				}, 100);
+	const { execute: onGetTrendingTracks } = useAsync({
+		handler: categoriesService.getTrendingTracks,
+		onListener: isPending => {
+			onSetIsFetchingCategories({
+				isFetching: isPending,
 			});
-	}, []);
+		},
+		onSuccess: ({ items }) => {
+			onAddTracks({
+				newTracks: items.map(track => ({
+					id: track.id,
+					title: track.title,
+					author: track.author,
+					thumbnail: track.thumbnail,
+					duration: track.duration,
+					source: [],
+					isLiked: false,
+					isLoadingAudio: false,
+					isNowPlaying: false,
+					captions: [],
+					audioFormats: [],
+				})),
+			});
+			onSetTrendingTrackIds({
+				trackIds: items.map(track => track.id),
+			});
+		},
+	});
+
+	useEffect(() => {
+		if (!isFetchingInitialPlaylists) {
+			onGetTrendingTracks();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isFetchingInitialPlaylists]);
 
 	return <Fragment>{children}</Fragment>;
 });

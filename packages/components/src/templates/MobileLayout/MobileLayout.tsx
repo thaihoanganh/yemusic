@@ -53,7 +53,9 @@ export const MobileLayout = ({ children, bottomNavigation, header, playerControl
 			>
 				{header && <div className={mobileLayoutStyles.mainHeader}>{header}</div>}
 				<div className={mobileLayoutStyles.mainContent}>
-					<ScrollArea fillContainer>{children}</ScrollArea>
+					<ScrollArea fillContainer>
+						<div className={mobileLayoutStyles.mainContentInner}>{children}</div>
+					</ScrollArea>
 				</div>
 			</div>
 			{currentTrackId && <div className={mobileLayoutStyles.playerController}>{playerController}</div>}

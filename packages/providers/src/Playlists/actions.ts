@@ -1,6 +1,33 @@
-import { PlaylistsContext, defaultPlaylistSlugs } from './PlaylistsProvider';
-import { ILocalPlaylist, IPlaylistEntity, localPlaylistSchema, playlistSchema } from './schemas';
+import { z } from 'zod';
+
+import { IPlaylistEntity, PlaylistsContext, defaultPlaylistSlugs } from './PlaylistsProvider';
 import { generateId, generateSlug } from './utils';
+
+export const playlistSchema = z.object({
+	_id: z.string(),
+	slug: z.string(),
+	name: z.string(),
+	isDefault: z.boolean(),
+	isPrivate: z.boolean(),
+	tracks: z.array(
+		z.object({
+			_id: z.string(),
+			trackId: z.string(),
+			addedAt: z.number(),
+		})
+	),
+});
+
+const localPlaylistSchema = z.object({
+	name: z.string(),
+	isDefault: z.boolean(),
+	tracks: z.array(
+		z.object({
+			trackId: z.string(),
+			addedAt: z.number(),
+		})
+	),
+});
 
 export function localPlaylistsAdapter(playlistsData: unknown): IPlaylistEntity[] {
 	try {
@@ -16,6 +43,7 @@ export function localPlaylistsAdapter(playlistsData: unknown): IPlaylistEntity[]
 				slug: generateSlug(playlist.name),
 				name: playlist.name,
 				isDefault: playlist.isDefault,
+				isLoadMore: false,
 				isPrivate: false,
 				tracks: playlist.tracks.map(track => {
 					if (track.addedAt > Date.now() || track.addedAt < 0) {
@@ -35,7 +63,7 @@ export function localPlaylistsAdapter(playlistsData: unknown): IPlaylistEntity[]
 	}
 }
 
-export function playlistsAdapter(playlistsData: unknown): ILocalPlaylist[] {
+export function playlistsAdapter(playlistsData: unknown): z.infer<typeof localPlaylistSchema>[] {
 	try {
 		const playlists = playlistSchema.array().parse(playlistsData);
 
@@ -65,116 +93,55 @@ export function playlistsAdapter(playlistsData: unknown): ILocalPlaylist[] {
 }
 
 export function onSetPlaylists(playlists: IPlaylistEntity[]): void {
-	const { updateState } = PlaylistsContext;
+	const { updateStateWithImmer } = PlaylistsContext;
 
-	updateState(playlists);
-}
-
-export function onAddPlaylist({ playlist }: { playlist: IPlaylistEntity }): void {
-	const { updateState } = PlaylistsContext;
-
-	updateState(prevState => [...prevState, playlist]);
-}
-
-export function onEditPlaylist({
-	playlistId,
-	updatePlaylistData,
-}: {
-	playlistId: string;
-	updatePlaylistData: Partial<Pick<IPlaylistEntity, 'name' | 'isDefault' | 'tracks'>>;
-}): void {
-	const { updateState } = PlaylistsContext;
-
-	updateState(prevState => {
-		const cloneState = [...prevState];
-
-		const playlist = cloneState.find(playlist => playlist._id === playlistId);
-
-		if (playlist) {
-			Object.assign(playlist, updatePlaylistData);
-		}
-
-		return cloneState;
+	updateStateWithImmer(prevState => {
+		prevState.playlists = playlists;
 	});
 }
 
-export function onEditPlaylistWithSlug({
+export function onAddPlaylist({ playlist }: { playlist: IPlaylistEntity }): void {
+	const { updateStateWithImmer } = PlaylistsContext;
+
+	updateStateWithImmer(state => {
+		state.playlists.push(playlist);
+	});
+}
+
+export function onEditPlaylist({
 	slug,
 	updatePlaylistData,
 }: {
 	slug: string;
 	updatePlaylistData: Partial<Pick<IPlaylistEntity, 'name' | 'isDefault' | 'tracks'>>;
 }): void {
-	const { updateState } = PlaylistsContext;
+	const { updateStateWithImmer } = PlaylistsContext;
 
-	updateState(prevState => {
-		const cloneState = [...prevState];
+	updateStateWithImmer(state => {
+		const playlistIndex = state.playlists.findIndex(playlist => playlist.slug === slug);
 
-		const playlist = cloneState.find(playlist => playlist.slug === slug);
-
-		if (playlist) {
-			Object.assign(playlist, updatePlaylistData);
+		if (playlistIndex !== -1) {
+			state.playlists[playlistIndex] = {
+				...state.playlists[playlistIndex],
+				...updatePlaylistData,
+			};
 		}
-
-		return cloneState;
 	});
 }
 
 export function onRemovePlaylist({ playlistId }: { playlistId: string }): void {
-	const { updateState } = PlaylistsContext;
+	const { updateStateWithImmer } = PlaylistsContext;
 
-	updateState(prevState => prevState.filter(playlist => playlist._id !== playlistId));
+	updateStateWithImmer(state => {
+		const playlistIndex = state.playlists.findIndex(playlist => playlist._id === playlistId);
+
+		if (playlistIndex !== -1) {
+			state.playlists.splice(playlistIndex, 1);
+		}
+	});
 }
 
 export function onAddTrackToPlaylist({
-	playlistId,
-	track,
-}: {
-	playlistId: string;
-	track: {
-		_id: string;
-		trackId: string;
-		addedAt: number;
-	};
-}): void {
-	const { updateState } = PlaylistsContext;
-
-	updateState(prevState => {
-		const cloneState = [...prevState];
-
-		const playlist = cloneState.find(playlist => playlist._id === playlistId);
-
-		if (playlist) {
-			const trackIndex = playlist.tracks.findIndex(playlistTrack => playlistTrack.trackId === track.trackId);
-
-			if (trackIndex !== -1) {
-				playlist.tracks.splice(trackIndex, 1);
-			}
-
-			playlist.tracks.push(track);
-		}
-
-		return cloneState;
-	});
-}
-
-export function onRemoveTrackFromPlaylist({ playlistId, trackId }: { playlistId: string; trackId: string }): void {
-	const { updateState } = PlaylistsContext;
-
-	updateState(prevState => {
-		const cloneState = [...prevState];
-
-		const playlist = cloneState.find(playlist => playlist._id === playlistId);
-
-		if (playlist) {
-			playlist.tracks = playlist.tracks.filter(track => track.trackId !== trackId);
-		}
-
-		return cloneState;
-	});
-}
-
-export function onAddTrackToPlaylistWithSlug({
 	slug,
 	track,
 }: {
@@ -185,12 +152,10 @@ export function onAddTrackToPlaylistWithSlug({
 		addedAt: number;
 	};
 }): void {
-	const { updateState } = PlaylistsContext;
+	const { updateStateWithImmer } = PlaylistsContext;
 
-	updateState(prevState => {
-		const cloneState = [...prevState];
-
-		const playlist = cloneState.find(playlist => playlist.slug === slug);
+	updateStateWithImmer(prevState => {
+		const playlist = prevState.playlists.find(playlist => playlist.slug === slug);
 
 		if (playlist) {
 			const trackIndex = playlist.tracks.findIndex(playlistTrack => playlistTrack.trackId === track.trackId);
@@ -198,25 +163,24 @@ export function onAddTrackToPlaylistWithSlug({
 			if (trackIndex !== -1) {
 				playlist.tracks.splice(trackIndex, 1);
 			}
+
 			playlist.tracks.push(track);
 		}
-
-		return cloneState;
 	});
 }
 
-export function onRemoveTrackFromPlaylistWithSlug({ slug, trackId }: { slug: string; trackId: string }): void {
-	const { updateState } = PlaylistsContext;
+export function onRemoveTrackFromPlaylist({ slug, trackId }: { slug: string; trackId: string }): void {
+	const { updateStateWithImmer } = PlaylistsContext;
 
-	updateState(prevState => {
-		const cloneState = [...prevState];
-
-		const playlist = cloneState.find(playlist => playlist.slug === slug);
+	updateStateWithImmer(prevState => {
+		const playlist = prevState.playlists.find(playlist => playlist.slug === slug);
 
 		if (playlist) {
-			playlist.tracks = playlist.tracks.filter(track => track.trackId !== trackId);
-		}
+			const trackIndex = playlist.tracks.findIndex(playlistTrack => playlistTrack.trackId === trackId);
 
-		return cloneState;
+			if (trackIndex !== -1) {
+				playlist.tracks.splice(trackIndex, 1);
+			}
+		}
 	});
 }

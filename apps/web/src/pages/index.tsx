@@ -1,15 +1,14 @@
-import { Categories, Frame, MobileHomeHeader, useTheme } from '@yemusic/components';
+import { MobileHomeHeader, RecentlyPlayedTracks, Stack, TrendingTracks } from '@yemusic/components';
 import { GetServerSideProps } from 'next';
 
 import { NextPageWithLayoutComponents } from './_app';
 
 const HomePage: NextPageWithLayoutComponents = () => {
-	const { device } = useTheme();
-
 	return (
-		<Frame horizontalPadding={device === 'desktop' ? 'large' : 'small'} verticalPadding="large">
-			<Categories />
-		</Frame>
+		<Stack spacing="large">
+			<RecentlyPlayedTracks />
+			<TrendingTracks />
+		</Stack>
 	);
 };
 

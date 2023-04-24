@@ -1,19 +1,11 @@
-import { Frame, SearchResults, useTheme } from '@yemusic/components';
+import { SearchResults } from '@yemusic/components';
 import MobileSearchHeader from '@yemusic/components/src/organisms/MobileHeader/MobileSearchHeader';
 import { GetServerSideProps } from 'next';
 
 import { NextPageWithLayoutComponents } from './_app';
 
 const SearchPage: NextPageWithLayoutComponents = () => {
-	const { device } = useTheme();
-
-	const isDesktop = device === 'desktop';
-
-	return (
-		<Frame horizontalPadding={isDesktop ? 'large' : 'small'} verticalPadding="small">
-			<SearchResults />
-		</Frame>
-	);
+	return <SearchResults />;
 };
 
 SearchPage.getLayoutComponents = () => ({

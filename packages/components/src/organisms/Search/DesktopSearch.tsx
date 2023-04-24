@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import { UnstyledButton } from '../../atoms/Button';
 import { CloseIcon, SearchIcon } from '../../atoms/Icons';
-import { typographyStyles } from '../../atoms/Typography/Typography.css';
+import { typographySizeStyles } from '../../atoms/Typography/Typography.css';
 
 import { useSearch } from './hooks';
 import { desktopSearchStyles } from './Search.css';
@@ -27,9 +27,9 @@ export const DesktopSearch = () => {
 			className={classNames(desktopSearchStyles.search, isFocused && desktopSearchStyles.searchFocused)}
 			ref={searchRef}
 		>
-			<SearchIcon />
+			<SearchIcon color="on-surface" />
 			<input
-				className={classNames(desktopSearchStyles.searchInput, typographyStyles['body']['large'])}
+				className={classNames(desktopSearchStyles.searchInput, typographySizeStyles['body']['large'])}
 				type="text"
 				placeholder="Tìm kiếm"
 				value={searchTerms}

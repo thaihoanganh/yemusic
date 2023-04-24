@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { UnstyledButton } from '../../atoms/Button';
 import { Group } from '../../atoms/Frame';
 import { ArrowBackIcon, CloseIcon, SearchIcon } from '../../atoms/Icons';
-import { typographyStyles } from '../../atoms/Typography/Typography.css';
+import { typographySizeStyles } from '../../atoms/Typography/Typography.css';
 
 import { useSearch } from './hooks';
 import { mobileSearch } from './Search.css';
@@ -45,7 +45,7 @@ export const MobileSearch = () => {
 			<label id="mobile-search" className={classNames(mobileSearch.root)} ref={searchRef}>
 				<input
 					ref={searchInputRef}
-					className={classNames(mobileSearch.searchInput, typographyStyles['body']['large'])}
+					className={classNames(mobileSearch.searchInput, typographySizeStyles['body']['large'])}
 					type="text"
 					placeholder="Tìm kiếm"
 					value={searchTerms}

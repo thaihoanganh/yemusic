@@ -1,17 +1,17 @@
 import { useCallback, useContext, useMemo } from 'react';
 
 import {
-	generateId,
-	onAddTrackIdToQueueIds,
-	onAddTrackToPlaylistWithSlug,
-	onEditPlaylistWithSlug,
-	onRemoveTrackFromPlaylistWithSlug,
-	onSetCurrentTrackId,
-	onTogglePlaying,
 	PlaylistsContext,
 	QueueContext,
 	SearchContext,
 	TracksContext,
+	generateId,
+	onAddTrackToPlaylist,
+	onAddTracksToQueue,
+	onEditPlaylist,
+	onRemoveTrackFromPlaylist,
+	onSetCurrentTrack,
+	onTogglePlaying,
 } from '@yemusic/providers';
 
 import { UnstyledButton } from '../../atoms/Button';
@@ -23,7 +23,7 @@ import { useTrackContextMenu } from '../Track/hooks';
 
 export const SearchResults = () => {
 	const tracks = useContext(TracksContext.Context);
-	const playlists = useContext(PlaylistsContext.Context);
+	const { isFetchingInitialPlaylists, playlists } = useContext(PlaylistsContext.Context);
 	const { queueTrackIds, currentTrackId } = useContext(QueueContext.Context);
 	const { isSearching, searchTerms, searchResultsIds } = useContext(SearchContext.Context);
 	const { onOpenTrackContextMenu } = useTrackContextMenu();
@@ -56,13 +56,13 @@ export const SearchResults = () => {
 		onTogglePlaying({
 			isPlaying: false,
 		});
-		onAddTrackIdToQueueIds({
+		onAddTracksToQueue({
+			trackIds: [trackId],
+		});
+		onSetCurrentTrack({
 			trackId,
 		});
-		onSetCurrentTrackId({
-			trackId,
-		});
-		onAddTrackToPlaylistWithSlug({
+		onAddTrackToPlaylist({
 			slug: 'recently-searched',
 			track: {
 				_id: generateId(),
@@ -70,7 +70,7 @@ export const SearchResults = () => {
 				addedAt: Date.now(),
 			},
 		});
-		onAddTrackToPlaylistWithSlug({
+		onAddTrackToPlaylist({
 			slug: 'recently-played',
 			track: {
 				_id: generateId(),
@@ -82,7 +82,7 @@ export const SearchResults = () => {
 
 	const handleToggleLikeTrack = (trackId: string, isLike: boolean) => {
 		if (isLike) {
-			onAddTrackToPlaylistWithSlug({
+			onAddTrackToPlaylist({
 				slug: 'liked-tracks',
 				track: {
 					_id: generateId(),
@@ -91,7 +91,7 @@ export const SearchResults = () => {
 				},
 			});
 		} else {
-			onRemoveTrackFromPlaylistWithSlug({
+			onRemoveTrackFromPlaylist({
 				slug: 'liked-tracks',
 				trackId,
 			});
@@ -160,6 +160,7 @@ export const SearchResults = () => {
 													isNowPlaying: currentTrackId === result.id,
 													thumbnail: result.thumbnail,
 													title: result.title,
+													ref: result.trackingId,
 												},
 											});
 										}}
@@ -173,9 +174,9 @@ export const SearchResults = () => {
 		);
 	}
 
-	if (recentlySearchedTracks.length > 0) {
+	if (isFetchingInitialPlaylists || recentlySearchedTracks.length > 0) {
 		const handleClearRecentlySearchedTracks = () => {
-			onEditPlaylistWithSlug({
+			onEditPlaylist({
 				slug: 'recently-searched',
 				updatePlaylistData: {
 					tracks: [],
@@ -184,61 +185,91 @@ export const SearchResults = () => {
 		};
 
 		return (
-			<Stack spacing="medium">
-				<Group alignItems="center" justifyContent="space-between">
-					<Typography
-						style={{
-							fontWeight: 600,
-						}}
-						variant="title"
-						size="large"
-					>
-						{recentlySearchedTracks.length > 0 ? 'Tìm kiếm gần đây' : null}
-					</Typography>
-
-					<UnstyledButton onClick={handleClearRecentlySearchedTracks}>
-						<Typography variant="label" size="medium" color="on-surface-variant">
-							Xoá
-						</Typography>
-					</UnstyledButton>
-				</Group>
-
+			<LoadingLayerProvider isLoading={isFetchingInitialPlaylists}>
 				<Stack spacing="medium">
-					{recentlySearchedTracks.map(result => (
-						<TrackSecondary
-							key={result.id}
-							author={result.author}
-							duration={result.duration}
-							id={result.id}
-							isLiked={result.isLiked}
-							isNowPlaying={currentTrackId === result.id}
-							isVisibleDuration
-							thumbnail={result.thumbnail}
-							title={result.title}
-							onOpenTrackContextMenu={({ position }) => {
-								onOpenTrackContextMenu({
-									desktopPosition: position,
-									trackInfo: {
-										author: result.author,
-										id: result.id,
-										isInQueue: queueTrackIds.includes(result.id),
-										isLiked: result.isLiked,
-										isNowPlaying: currentTrackId === result.id,
-										thumbnail: result.thumbnail,
-										title: result.title,
-									},
-								});
-							}}
-							onToggleLikeTrack={() => handleToggleLikeTrack(result.id, !result.isLiked)}
-							onTogglePlaying={() => handleTogglePlaying(result.id)}
-						/>
-					))}
+					<Group alignItems="center" justifyContent="space-between">
+						<LoadingLayer loading="inherit">
+							<Typography
+								style={{
+									fontWeight: 600,
+								}}
+								variant="title"
+								size="large"
+							>
+								Tìm kiếm gần đây
+							</Typography>
+						</LoadingLayer>
+
+						<LoadingLayer loading="inherit">
+							<UnstyledButton onClick={handleClearRecentlySearchedTracks}>
+								<Typography variant="label" size="medium" color="on-surface-variant">
+									Xoá
+								</Typography>
+							</UnstyledButton>
+						</LoadingLayer>
+					</Group>
+
+					<Stack spacing="medium">
+						{isFetchingInitialPlaylists
+							? Array.from({
+									length: 20,
+							  }).map((_, index) => (
+									<div key={index}>
+										<TrackSecondary
+											key={index}
+											author="author"
+											duration={0}
+											id="id"
+											isLiked={false}
+											isVisibleDuration
+											thumbnail=""
+											title="title"
+										/>
+									</div>
+							  ))
+							: recentlySearchedTracks.map(result => (
+									<TrackSecondary
+										key={result.id}
+										author={result.author}
+										duration={result.duration}
+										id={result.id}
+										isLiked={result.isLiked}
+										isNowPlaying={currentTrackId === result.id}
+										isVisibleDuration
+										thumbnail={result.thumbnail}
+										title={result.title}
+										onOpenTrackContextMenu={({ position }) => {
+											onOpenTrackContextMenu({
+												desktopPosition: position,
+												trackInfo: {
+													author: result.author,
+													id: result.id,
+													isInQueue: queueTrackIds.includes(result.id),
+													isLiked: result.isLiked,
+													isNowPlaying: currentTrackId === result.id,
+													thumbnail: result.thumbnail,
+													title: result.title,
+												},
+											});
+										}}
+										onToggleLikeTrack={() => handleToggleLikeTrack(result.id, !result.isLiked)}
+										onTogglePlaying={() => handleTogglePlaying(result.id)}
+									/>
+							  ))}
+					</Stack>
 				</Stack>
-			</Stack>
+			</LoadingLayerProvider>
 		);
 	}
 
-	return null;
+	return (
+		<Group
+			alignItems="center"
+			style={{
+				height: '100%',
+			}}
+		></Group>
+	);
 };
 
 export default SearchResults;

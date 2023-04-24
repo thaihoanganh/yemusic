@@ -2,7 +2,11 @@ import { Fragment, PropsWithChildren } from 'react';
 
 import createSingletonAppContext from '../createSingletonAppContext';
 
-import { ISearchEntity } from './entity';
+export interface ISearchEntity {
+	isSearching: boolean;
+	searchTerms: string;
+	searchResultsIds: string[];
+}
 
 export const initialSearchState: ISearchEntity = {
 	isSearching: false,
