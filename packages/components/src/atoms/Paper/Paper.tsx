@@ -1,25 +1,26 @@
 import React, { createElement } from 'react';
 
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import classNames from 'classnames';
 
+import { themeBackgroundPaletteKeys } from '../../Theme/theme.config';
 import { createThemeVars } from '../../Theme/Theme.css';
 
-import { paperBackgrounds, paperBackgroundStyles, paperOtherStyles } from './Paper.css';
+import { paperColorStyles } from './Paper.css';
 
-export interface PaperProps extends React.HTMLAttributes<HTMLElement> {
-	color?: (typeof paperBackgrounds)[number];
+export interface PaperProps extends React.PropsWithChildren {
+	color?: (typeof themeBackgroundPaletteKeys)[number];
 	backgroundOpacity?: number;
 	bordered?: boolean;
 	element?: keyof JSX.IntrinsicElements;
 	surfaceLevel?: 1 | 2 | 3 | 4 | 5;
+	style?: React.CSSProperties;
 }
 
 export const Paper = ({
 	children,
-	className,
 	color,
 	backgroundOpacity,
-	bordered,
 	element = 'div',
 	surfaceLevel,
 	style,
@@ -64,15 +65,12 @@ export const Paper = ({
 					[x: string]: string;
 				}),
 			},
-			className: [bordered && paperOtherStyles.bordered, color && paperBackgroundStyles[color]]
-				.filter(Boolean)
-				.join(' '),
+			className: classNames(color && paperColorStyles[color]),
 			children: (
 				<div
 					style={assignInlineVars({
 						[createThemeVars.stateLayerOpacity]: '1',
 					})}
-					className={className}
 				>
 					{children}
 				</div>
@@ -82,9 +80,7 @@ export const Paper = ({
 	} else {
 		return createElement(element, {
 			style,
-			className: [bordered && paperOtherStyles.bordered, color && paperBackgroundStyles[color], className]
-				.filter(Boolean)
-				.join(' '),
+			className: classNames(color && paperColorStyles[color]),
 			children,
 			...otherProps,
 		});

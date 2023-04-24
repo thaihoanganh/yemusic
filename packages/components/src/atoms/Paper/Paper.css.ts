@@ -1,12 +1,10 @@
 import { styleVariants } from '@vanilla-extract/css';
 
-import { themePaletteKeys } from '../../Theme/theme.config';
+import { themeBackgroundPaletteKeys } from '../../Theme/theme.config';
 import { themeVars } from '../../Theme/Theme.css';
 
-export const paperBackgrounds = themePaletteKeys.filter(type => /^[^o][^n]/.test(type));
-
-const createPaperBackgroundStyles = () => {
-	const variants = paperBackgrounds.reduce(
+const createPaperColorStyles = () => {
+	const variants = themeBackgroundPaletteKeys.reduce(
 		(acc, type) => {
 			acc[type] = {
 				backgroundColor: themeVars.palette[type],
@@ -24,12 +22,6 @@ const createPaperBackgroundStyles = () => {
 	return variants;
 };
 
-export const paperBackgroundStyles = styleVariants({
-	...createPaperBackgroundStyles(),
-});
-
-export const paperOtherStyles = styleVariants({
-	bordered: {
-		border: `1px solid ${themeVars.palette.outline}`,
-	},
+export const paperColorStyles = styleVariants({
+	...createPaperColorStyles(),
 });
