@@ -1,12 +1,12 @@
-import React from 'react';
+import classNames from 'classnames';
 
 import { iconColorStyles, iconOtherStyles, iconSizeStyles } from './Icon.css';
 import { IconProps } from './Icon.types';
 
-export const PlaylistAddCheckIcon = ({ color = 'on-surface', size = 'medium', ...otherProps }: IconProps) => {
+export const PlaylistAddCheckIcon = ({ color, size = 'medium', ...otherProps }: IconProps) => {
 	return (
 		<svg
-			className={[iconOtherStyles.root, iconColorStyles[color], iconSizeStyles[size]].filter(Boolean).join(' ')}
+			className={classNames(iconOtherStyles.root, color && iconColorStyles[color], iconSizeStyles[size])}
 			viewBox="0 0 24 24"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
