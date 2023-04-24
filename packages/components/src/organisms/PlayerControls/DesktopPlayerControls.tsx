@@ -53,7 +53,7 @@ export const DesktopPlayerControls = () => {
 	} = usePlayerControls();
 
 	const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-	const audioSrc = trackNowPlaying?.audio[isSafari ? 1 : 0]?.url;
+	const audioSrc = trackNowPlaying?.audioFormats[isSafari ? 1 : 0]?.url;
 
 	return (
 		<Fragment>

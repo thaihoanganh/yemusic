@@ -2,13 +2,22 @@ import { Fragment, PropsWithChildren } from 'react';
 
 import createSingletonAppContext from '../createSingletonAppContext';
 
-import { IQueueEntity } from './entity';
+export interface IQueueEntity {
+	queueTrackIds: string[];
+	playedIds: string[];
+	currentTrackId: string;
+	title: string;
+	playlistSlug: null | string;
+	isMixed: boolean;
+}
 
 export const initialQueueState: IQueueEntity = {
 	queueTrackIds: [],
 	playedIds: [],
 	currentTrackId: '',
 	title: '',
+	playlistSlug: null,
+	isMixed: false,
 };
 
 export const QueueContext = createSingletonAppContext<IQueueEntity>(initialQueueState);

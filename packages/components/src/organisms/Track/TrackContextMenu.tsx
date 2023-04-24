@@ -2,11 +2,12 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 
 import {
 	generateId,
-	onAddTrackIdToQueueIds,
-	onAddTrackToPlaylistWithSlug,
-	onRemoveTrackFromPlaylistWithSlug,
-	onRemoveTrackIdFromQueueIds,
+	onAddTracksToQueue,
+	onAddTrackToPlaylist,
+	onRemoveTrackFromPlaylist,
+	onRemoveTrackFromQueue,
 } from '@yemusic/providers';
+import { playlistsService } from '@yemusic/services/v1';
 import Image from 'next/image';
 
 import { UnstyledButton } from '../../atoms/Button';
@@ -48,8 +49,8 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 
 	const handleAddToPlaylist = () => {
 		if (trackInfo) {
-			onAddTrackIdToQueueIds({
-				trackId: trackInfo.id,
+			onAddTracksToQueue({
+				trackIds: [trackInfo.id],
 			});
 			handleCloseContextMenu();
 		}
@@ -57,7 +58,7 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 
 	const handleRemoveFromPlaylist = () => {
 		if (trackInfo) {
-			onRemoveTrackIdFromQueueIds({
+			onRemoveTrackFromQueue({
 				trackId: trackInfo.id,
 			});
 			handleCloseContextMenu();
@@ -91,9 +92,9 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 			}
 		}
 
-		const handleToggleLikeTrack = (trackId: string, isLike: boolean) => {
+		const handleToggleLikeTrack = (trackId: string, isLike: boolean, ref?: string) => {
 			if (isLike) {
-				onAddTrackToPlaylistWithSlug({
+				onAddTrackToPlaylist({
 					slug: 'liked-tracks',
 					track: {
 						_id: generateId(),
@@ -101,8 +102,16 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 						addedAt: Date.now(),
 					},
 				});
+
+				if (trackInfo.ref) {
+					playlistsService.addTrackToPlaylist({
+						playlistSlug: 'liked-tracks',
+						trackId: trackId,
+						ref: ref,
+					});
+				}
 			} else {
-				onRemoveTrackFromPlaylistWithSlug({
+				onRemoveTrackFromPlaylist({
 					slug: 'liked-tracks',
 					trackId,
 				});
@@ -122,7 +131,14 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 		return (
 			<div className={trackContextMenuStyles.modal}>
 				<div className={trackContextMenuStyles.modalMask} onClick={handleCloseContextMenu}>
-					<Paper color={isMobile ? 'surface' : undefined} backgroundOpacity={isMobile ? 0.36 : 0} />
+					<Paper
+						style={{
+							width: '100%',
+							height: '100%',
+						}}
+						color={isMobile ? 'surface' : undefined}
+						backgroundOpacity={isMobile ? 0.36 : 0}
+					/>
 				</div>
 				<div ref={trackContextMenuRef} style={trackContextMenuStyle} className={trackContextMenuStyles.modalContent}>
 					<Paper color="surface">
@@ -193,7 +209,9 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 											</StateLayer>
 										</UnstyledButton>
 									)}
-									<UnstyledButton onClick={() => handleToggleLikeTrack(trackInfo.id, !trackInfo.isLiked)}>
+									<UnstyledButton
+										onClick={() => handleToggleLikeTrack(trackInfo.id, !trackInfo.isLiked, trackInfo.ref)}
+									>
 										<StateLayer color="primary" state={isMobile ? [] : ['hover']}>
 											<Group
 												style={{
@@ -212,7 +230,7 @@ export const TrackContextMenu = ({ isMobile }: TrackContextMenuProps) => {
 										</StateLayer>
 									</UnstyledButton>
 									<UnstyledButton onClick={handleDownloadTrack}>
-										<StateLayer color="primary" state={isMobile || trackInfo.isNowPlaying ? [] : ['hover']}>
+										<StateLayer color="primary" state={isMobile ? [] : ['hover']}>
 											<Group
 												style={{
 													width: trackContextMenuWidth,

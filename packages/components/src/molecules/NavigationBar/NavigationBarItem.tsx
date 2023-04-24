@@ -13,10 +13,11 @@ export interface NavigationBarItemProps {
 	iconActive: React.ReactElement<IconProps>;
 	isActive?: boolean;
 	label: string;
+	style?: React.CSSProperties;
 	to: string;
 }
 
-export const NavigationBarItem = ({ icon, iconActive, isActive, label, to }: NavigationBarItemProps) => {
+export const NavigationBarItem = ({ icon, iconActive, isActive, label, style, to }: NavigationBarItemProps) => {
 	if (!isValidElement(icon) || !isValidElement(iconActive)) {
 		throw new Error('NavigationBarItem: icon and iconActive must be valid elements');
 	}
@@ -28,7 +29,7 @@ export const NavigationBarItem = ({ icon, iconActive, isActive, label, to }: Nav
 	};
 
 	return (
-		<li className={navigationBarItemStyles.root} role="button" onClick={handleClick}>
+		<li style={style} className={navigationBarItemStyles.root} role="button" onClick={handleClick}>
 			{cloneElement<IconProps>(isActive ? iconActive : icon, {
 				color: isActive ? 'on-secondary-container' : 'on-surface-variant',
 			})}

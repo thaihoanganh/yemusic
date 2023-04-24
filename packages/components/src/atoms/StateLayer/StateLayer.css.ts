@@ -1,12 +1,10 @@
 import { styleVariants } from '@vanilla-extract/css';
 
-import { themePaletteKeys } from '../../Theme/theme.config';
+import { themeBackgroundPaletteKeys } from '../../Theme/theme.config';
 import { themeVars } from '../../Theme/Theme.css';
 
-export const stateLayers = themePaletteKeys.filter(type => /^[^o][^n]/.test(type));
-
 const createStateLayerStyles = () => {
-	const variants = stateLayers.reduce(
+	const variants = themeBackgroundPaletteKeys.reduce(
 		(acc, type) => {
 			acc[type] = {
 				backgroundColor: themeVars.palette[type],

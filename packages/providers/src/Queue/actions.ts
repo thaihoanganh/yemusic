@@ -1,45 +1,70 @@
 import { QueueContext } from './QueueProvider';
 
-export function onSetqueueTrackIds({ queueTrackIds }: { queueTrackIds: string[] }) {
-	const { updateState } = QueueContext;
+export function onSetQueue({
+	queueTrackIds,
+	playlistSlug = null,
+}: {
+	queueTrackIds: string[];
+	playlistSlug?: null | string;
+}) {
+	console.log('onSetQueue');
 
-	updateState(prevState => ({
-		...prevState,
-		queueTrackIds,
-	}));
+	const { updateStateWithImmer } = QueueContext;
+
+	updateStateWithImmer(state => {
+		state.queueTrackIds = queueTrackIds;
+		state.playlistSlug = playlistSlug;
+	});
 }
 
-export function onAddTrackIdToQueueIds({ trackId }: { trackId: string }) {
-	const { getState, updateState } = QueueContext;
-	const { queueTrackIds } = getState();
+export function onAddTracksToQueue({
+	trackIds,
+	playlistSlug = null,
+}: {
+	trackIds: string[];
+	playlistSlug?: null | string;
+}) {
+	const { updateStateWithImmer } = QueueContext;
 
-	const isTrackAlreadyAdded = queueTrackIds.find(id => id === trackId);
+	updateStateWithImmer(state => {
+		const prevQueueTrackIdsLength = state.queueTrackIds.length;
 
-	if (!isTrackAlreadyAdded) {
-		updateState(prevState => ({
-			...prevState,
-			queueTrackIds: [...prevState.queueTrackIds, trackId],
-		}));
-	}
+		state.queueTrackIds = [...state.queueTrackIds, ...trackIds].filter((id, index, self) => self.indexOf(id) === index);
+
+		state.isMixed = prevQueueTrackIdsLength !== 0 && prevQueueTrackIdsLength < state.queueTrackIds.length;
+		state.playlistSlug = playlistSlug ?? state.playlistSlug;
+	});
 }
 
-export function onRemoveTrackIdFromQueueIds({ trackId }: { trackId: string }) {
-	const { updateState } = QueueContext;
+export function onRemoveTrackFromQueue({ trackId }: { trackId: string }) {
+	const { updateStateWithImmer } = QueueContext;
 
-	updateState(prevState => ({
-		...prevState,
-		queueTrackIds: prevState.queueTrackIds.filter(id => id !== trackId),
-	}));
+	updateStateWithImmer(state => {
+		const playedIndex = state.playedIds.findIndex(id => id === trackId);
+		const queueTrackIndex = state.queueTrackIds.findIndex(id => id === trackId);
+
+		if (playedIndex !== -1) {
+			state.playedIds.splice(playedIndex, 1);
+		}
+
+		state.queueTrackIds.splice(queueTrackIndex, 1);
+	});
 }
 
-export const onSetCurrentTrackId = ({ trackId }: { trackId: string }) => {
-	const { updateState } = QueueContext;
+export const onSetCurrentTrack = ({ trackId }: { trackId: string }) => {
+	const { updateStateWithImmer } = QueueContext;
 
-	updateState(prevState => ({
-		...prevState,
-		playedIds: [...prevState.playedIds.filter(id => id !== trackId), trackId],
-		currentTrackId: trackId,
-	}));
+	updateStateWithImmer(state => {
+		state.currentTrackId = trackId;
+
+		const playedIndex = state.playedIds.findIndex(id => id === trackId);
+
+		if (playedIndex !== -1) {
+			state.playedIds.splice(playedIndex, 1);
+		}
+
+		state.playedIds.push(trackId);
+	});
 };
 
 export function onSkipToNextTrack({ isShuffling }: { isShuffling: boolean }) {

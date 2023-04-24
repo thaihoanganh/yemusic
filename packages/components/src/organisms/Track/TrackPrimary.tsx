@@ -100,7 +100,7 @@ export const TrackPrimary = ({
 							}}
 							spacing="xsmall"
 						>
-							<LoadingLayer loading={false}>
+							<LoadingLayer loading="inherit">
 								<div
 									style={{
 										overflow: 'hidden',
@@ -152,7 +152,7 @@ export const TrackPrimary = ({
 
 							<Group>
 								<Stack spacing="xsmall">
-									<LoadingLayer loading={false}>
+									<LoadingLayer loading="inherit">
 										<Typography
 											variant="title"
 											size="small"
@@ -171,7 +171,7 @@ export const TrackPrimary = ({
 											{title}
 										</Typography>
 									</LoadingLayer>
-									<LoadingLayer loading={false}>
+									<LoadingLayer loading="inherit">
 										<Typography
 											variant="body"
 											size="small"

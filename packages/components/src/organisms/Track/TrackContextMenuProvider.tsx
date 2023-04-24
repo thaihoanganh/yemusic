@@ -15,6 +15,7 @@ type ITrackContextMenuState =
 				isNowPlaying: boolean;
 				thumbnail: string;
 				title: string;
+				ref?: string;
 			};
 	  }
 	| {

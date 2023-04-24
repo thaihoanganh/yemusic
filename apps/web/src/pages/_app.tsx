@@ -1,7 +1,6 @@
 import { Fragment, useEffect } from 'react';
 
 import {
-	DesktopAside,
 	DesktopHeader,
 	DesktopLayout,
 	DesktopPlayerControls,
@@ -11,6 +10,7 @@ import {
 	MobileLayout,
 	MobileNavigation,
 	MobilePlayerControls,
+	Queue,
 	ThemeProvider,
 	TrackContextMenu,
 	TrackContextMenuProvider,
@@ -107,7 +107,7 @@ const _app = ({ Component, pageProps }: AppPropsWithLayout) => {
 													</MobileLayout>
 												) : (
 													<DesktopLayout
-														aside={<DesktopAside />}
+														queue={<Queue />}
 														header={<DesktopHeader />}
 														playerControler={<DesktopPlayerControls />}
 														sidebar={<DesktopSidebar />}

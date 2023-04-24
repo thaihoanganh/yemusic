@@ -1,5 +1,4 @@
-import { ITrackEntity } from './entity';
-import { TracksContext } from './TracksProvider';
+import { ITrackEntity, TracksContext } from './TracksProvider';
 
 export function onSetTracks({ tracks }: { tracks: ITrackEntity[] }) {
 	const { updateState } = TracksContext;
@@ -47,10 +46,16 @@ export function onToggleLikeTrack({ trackId, isLiked }: { trackId: string; isLik
 
 export function setAudioUrlTrack({
 	trackId,
-	audio,
+	captions,
+	audioFormats,
 }: {
 	trackId: string;
-	audio: {
+	captions: {
+		baseUrl: string;
+		languageCode: string;
+	}[];
+	audioFormats: {
+		mimeType: string;
 		itag: number;
 		url: string;
 	}[];
@@ -63,7 +68,9 @@ export function setAudioUrlTrack({
 	if (trackIndex !== -1) {
 		updateState(prevState => {
 			const cloneTracks = [...prevState];
-			cloneTracks[trackIndex].audio = audio;
+
+			cloneTracks[trackIndex].captions = captions;
+			cloneTracks[trackIndex].audioFormats = audioFormats;
 
 			return cloneTracks;
 		});

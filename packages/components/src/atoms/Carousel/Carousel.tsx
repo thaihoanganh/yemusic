@@ -14,7 +14,7 @@ export interface CarouselProps {
 	isScrollable?: boolean;
 }
 
-const Carousel = ({ children, isScrollable, spacing = 16 }: CarouselProps) => {
+export const Carousel = ({ children, isScrollable, spacing = 16 }: CarouselProps) => {
 	const carouselContentRef = useRef<null | HTMLDivElement>(null);
 	const [firstItemIndex, setFirstItemIndex] = useState(0);
 	const [canNavigationNext, setCanNavigationNext] = useState(false);
@@ -34,9 +34,12 @@ const Carousel = ({ children, isScrollable, spacing = 16 }: CarouselProps) => {
 
 			if (carouselContentWidth > carouselContentWrapperlWidth) {
 				setCanNavigationNext(true);
+			} else {
+				setCanNavigationNext(false);
 			}
 		}
-	}, []);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [Children.count(children)]);
 
 	const lastCarouselItemWidth = carouselContentRef.current?.lastElementChild?.clientWidth || 0;
 	const carouselContentWrapperlWidth = carouselContentRef.current?.parentElement?.clientWidth || 0;

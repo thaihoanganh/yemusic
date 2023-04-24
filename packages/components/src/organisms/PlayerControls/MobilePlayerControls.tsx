@@ -3,11 +3,11 @@ import { Fragment, useState } from 'react';
 import { formatTime } from '@yemusic/utils';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 import { UnstyledButton } from '../../atoms/Button';
 import { Group, Stack } from '../../atoms/Frame';
 import {
-	DownloadIcon,
 	ExpandMoreIcon,
 	FavoriteFillIcon,
 	FavoriteIcon,
@@ -27,6 +27,7 @@ import { Paper } from '../../atoms/Paper';
 import { Slider } from '../../atoms/Slider';
 import Typography from '../../atoms/Typography/Typography';
 import { themeVars } from '../../Theme/Theme.css';
+import { useTrackContextMenu } from '../Track';
 
 import { usePlayerControls } from './hooks';
 import { mobilePlayerControlsStyles } from './PlayerControls.css';
@@ -34,7 +35,9 @@ import { mobilePlayerControlsStyles } from './PlayerControls.css';
 const mobilePlayerControlsColapsedHeight = 56;
 
 export const MobilePlayerControls = () => {
+	const router = useRouter();
 	const [isCollapsed, setIsCollapsed] = useState(true);
+	const { onOpenTrackContextMenu } = useTrackContextMenu();
 
 	const {
 		thumbnailRef,
@@ -53,11 +56,16 @@ export const MobilePlayerControls = () => {
 		handleSkipToPreviousTrack,
 		handleToggleShuffling,
 		handleToggleRepeatMode,
-		handleDownloadTrack,
 		handleToggleLikeTrack,
 	} = usePlayerControls();
 
-	const audioSrc = trackNowPlaying?.audio[0]?.url || '';
+	const onOpenQueue = () => {
+		router.push('/queue');
+		setIsCollapsed(true);
+	};
+
+	const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+	const audioSrc = trackNowPlaying?.audioFormats[isSafari ? 1 : 0]?.url;
 
 	return (
 		<Fragment>
@@ -120,7 +128,7 @@ export const MobilePlayerControls = () => {
 					}
 				}}
 			>
-				<Paper color="primary-dynamic" surfaceLevel={1}>
+				<Paper color="primary-dynamic" surfaceLevel={3}>
 					<motion.div
 						style={{
 							display: 'flex',
@@ -172,9 +180,29 @@ export const MobilePlayerControls = () => {
 										Now playing
 									</Typography>
 								</Group>
-								<UnstyledButton>
-									<MoreVertIcon />
-								</UnstyledButton>
+								{trackNowPlaying && (
+									<UnstyledButton
+										onClick={e => {
+											onOpenTrackContextMenu({
+												desktopPosition: {
+													x: e.clientX,
+													y: e.clientY,
+												},
+												trackInfo: {
+													author: trackNowPlaying.author,
+													id: trackNowPlaying.id,
+													isInQueue: true,
+													isLiked: trackNowPlaying.isLiked,
+													isNowPlaying: true,
+													thumbnail: trackNowPlaying.thumbnail,
+													title: trackNowPlaying.title,
+												},
+											});
+										}}
+									>
+										<MoreVertIcon />
+									</UnstyledButton>
+								)}
 							</Group>
 						</motion.div>
 
@@ -216,6 +244,7 @@ export const MobilePlayerControls = () => {
 									fill
 								/>
 							</motion.div>
+
 							<motion.div
 								style={{
 									overflow: 'hidden',
@@ -248,10 +277,10 @@ export const MobilePlayerControls = () => {
 									justifyContent="center"
 									horizontalPadding="small"
 								>
-									<Typography variant="body" color="on-surface-dynamic" truncate>
+									<Typography variant="body" color="on-surface-dynamic" truncate={isCollapsed}>
 										{trackNowPlaying?.title}
 									</Typography>
-									<Typography variant="body" size="small" color="on-surface-variant-dynamic" truncate>
+									<Typography variant="body" size="small" color="on-surface-variant-dynamic" truncate={isCollapsed}>
 										{trackNowPlaying?.author}
 									</Typography>
 								</Stack>
@@ -327,21 +356,13 @@ export const MobilePlayerControls = () => {
 							<Stack spacing="medium">
 								<Group spacing="xlarge" horizontalPadding="medium" verticalPadding="medium">
 									<Stack spacing="xsmall" fillContainer>
-										<Typography variant="body" size="large" truncate>
+										<Typography variant="body" size="large" textAlign="center" color="on-surface-dynamic">
 											{trackNowPlaying?.title}
 										</Typography>
-										<Typography variant="body" size="small" color="on-surface-variant-dynamic" truncate>
+										<Typography variant="body" color="on-surface-variant-dynamic" textAlign="center">
 											{trackNowPlaying?.author}
 										</Typography>
 									</Stack>
-
-									<UnstyledButton onClick={handleToggleLikeTrack}>
-										{trackNowPlaying?.isLiked ? (
-											<FavoriteFillIcon size="medium" color="primary-dynamic" />
-										) : (
-											<FavoriteIcon size="medium" color="on-surface-variant-dynamic" />
-										)}
-									</UnstyledButton>
 								</Group>
 
 								<Stack spacing="xsmall" horizontalPadding="medium" verticalPadding="medium">
@@ -382,14 +403,20 @@ export const MobilePlayerControls = () => {
 								</Group>
 
 								<Group justifyContent="space-between" horizontalPadding="medium" verticalPadding="medium">
-									<UnstyledButton onClick={handleDownloadTrack}>
-										<DownloadIcon />
+									<UnstyledButton onClick={handleToggleLikeTrack}>
+										{trackNowPlaying?.isLiked ? (
+											<FavoriteFillIcon size="medium" color="primary-dynamic" />
+										) : (
+											<FavoriteIcon size="medium" color="on-surface-variant-dynamic" />
+										)}
 									</UnstyledButton>
 
-									<UnstyledButton>
+									<UnstyledButton onClick={onOpenQueue}>
 										<Group spacing="small" alignItems="center">
-											<Typography variant="body">Danh sách phát</Typography>
-											<PlaylistPlayIcon />
+											<Typography variant="body" color="on-surface-variant-dynamic">
+												Tiếp theo
+											</Typography>
+											<PlaylistPlayIcon color="on-surface-variant-dynamic" />
 										</Group>
 									</UnstyledButton>
 								</Group>

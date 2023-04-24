@@ -1,10 +1,12 @@
+import classNames from 'classnames';
+
 import { iconColorStyles, iconOtherStyles, iconSizeStyles } from './Icon.css';
 import { IconProps } from './Icon.types';
 
-export const PlayCircleIcon = ({ color = 'on-surface', size = 'medium', ...otherProps }: IconProps) => {
+export const PlayCircleIcon = ({ color, size = 'medium', ...otherProps }: IconProps) => {
 	return (
 		<svg
-			className={[iconOtherStyles.root, iconColorStyles[color], iconSizeStyles[size]].filter(Boolean).join(' ')}
+			className={classNames(iconOtherStyles.root, color && iconColorStyles[color], iconSizeStyles[size])}
 			width="24"
 			height="24"
 			viewBox="0 0 24 24"

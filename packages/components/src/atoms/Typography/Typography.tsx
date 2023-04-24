@@ -2,17 +2,17 @@ import React, { createElement } from 'react';
 
 import classNames from 'classnames';
 
-import { themePaletteKeys } from '../../Theme/theme.config';
+import { themeTextPaletteKeys } from '../../Theme/theme.config';
 
 import {
 	typographyColorStyles,
 	typographyOtherStyles,
 	typographyTextAlignStyles,
-	typographyStyles,
+	typographySizeStyles,
 } from './Typography.css';
 
 export interface TypographyProps extends Omit<React.HTMLAttributes<HTMLElement>, 'color'> {
-	color?: (typeof themePaletteKeys)[number];
+	color?: (typeof themeTextPaletteKeys)[number];
 	element?: keyof JSX.IntrinsicElements;
 	size?: 'small' | 'medium' | 'large';
 	textAlign?: 'left' | 'center' | 'right';
@@ -36,7 +36,7 @@ export const Typography = ({
 			typographyColorStyles[color],
 			textAlign && typographyTextAlignStyles[textAlign],
 			truncate && typographyOtherStyles.truncate,
-			typographyStyles[variant][size],
+			typographySizeStyles[variant][size],
 			className
 		),
 		...otherProps,

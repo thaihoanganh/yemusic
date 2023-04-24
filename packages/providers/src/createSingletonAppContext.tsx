@@ -1,5 +1,7 @@
 import React, { createContext, PropsWithChildren, useState } from 'react';
 
+import { Draft, produce } from 'immer';
+
 export function createSingletonAppContext<IState>(initialState: IState) {
 	const Context = createContext<IState>(initialState);
 
@@ -29,6 +31,7 @@ export function createSingletonAppContext<IState>(initialState: IState) {
 		Context,
 		getState: () => Object.freeze(state),
 		updateState: ((value: IState) => updateState(value)) as React.Dispatch<React.SetStateAction<IState>>,
+		updateStateWithImmer: (producer: (draft: Draft<IState>) => void) => updateState(produce(producer)),
 		withProvider: <P,>(Component: React.ComponentType<P>) => {
 			return ({ ...props }: PropsWithChildren & P) => {
 				return (

@@ -11,7 +11,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@material/material-color-utilities": "^0.2.0",
+		"@material/material-color-utilities": "^0.2.5",
 		"@vanilla-extract/dynamic": "^2.0.3",
 		"@yemusic/hooks": "workspace:*",
 		"@yemusic/providers": "workspace:*",

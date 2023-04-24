@@ -1,10 +1,12 @@
+import classNames from 'classnames';
+
 import { iconColorStyles, iconOtherStyles, iconSizeStyles } from './Icon.css';
 import { IconProps } from './Icon.types';
 
-export const GithubIcon = ({ color = 'on-surface', size = 'medium', ...otherProps }: IconProps) => {
+export const GithubIcon = ({ color, size = 'medium', ...otherProps }: IconProps) => {
 	return (
 		<svg
-			className={[iconOtherStyles.root, iconColorStyles[color], iconSizeStyles[size]].filter(Boolean).join(' ')}
+			className={classNames(iconOtherStyles.root, color && iconColorStyles[color], iconSizeStyles[size])}
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"
 			height="24"

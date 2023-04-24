@@ -3,9 +3,10 @@ import { useCallback, useState } from 'react';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import classNames from 'classnames';
 
+import { themeBackgroundPaletteKeys } from '../../Theme/theme.config';
 import { createThemeVars } from '../../Theme/Theme.css';
 
-import { stateLayerBackgroundStyles, stateLayers } from './StateLayer.css';
+import { stateLayerBackgroundStyles } from './StateLayer.css';
 
 export interface StateLayer {
 	isHover: boolean;
@@ -15,12 +16,13 @@ export interface StateLayer {
 }
 
 export interface StateLayerProps {
-	color?: (typeof stateLayers)[number];
+	className?: string;
+	color?: (typeof themeBackgroundPaletteKeys)[number];
 	state: ('hover' | 'focus' | 'pressed' | 'dragged')[];
-	children: React.ReactNode | (({ isHover, isFocus, isPressed, isDragged }: StateLayer) => JSX.Element);
+	children?: React.ReactNode | (({ isHover, isFocus, isPressed, isDragged }: StateLayer) => JSX.Element);
 }
 
-export const StateLayer = ({ children, color, state }: StateLayerProps) => {
+export const StateLayer = ({ className, children, color, state }: StateLayerProps) => {
 	const [isHover, setIsHover] = useState(false);
 	const [isFocus, setIsFocus] = useState(false);
 	const [isPressed, setIsPressed] = useState(false);
@@ -63,7 +65,7 @@ export const StateLayer = ({ children, color, state }: StateLayerProps) => {
 			style={assignInlineVars({
 				[createThemeVars.stateLayerOpacity]: stateLayerOpacity,
 			})}
-			className={classNames(color && stateLayerBackgroundStyles[color])}
+			className={classNames(color && stateLayerBackgroundStyles[color], className)}
 			onMouseEnter={() => handleToggleState('hover', true)}
 			onMouseLeave={() => handleToggleState('hover', false)}
 			onFocus={() => handleToggleState('focus', true)}

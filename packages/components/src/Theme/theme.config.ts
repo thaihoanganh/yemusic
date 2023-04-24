@@ -1,62 +1,66 @@
-export type ThemeColors =
+export type IThemeBackgroundColors =
 	| 'primary'
-	| 'on-primary'
 	| 'primary-container'
-	| 'on-primary-container'
 	| 'secondary'
-	| 'on-secondary'
 	| 'secondary-container'
-	| 'on-secondary-container'
 	| 'tertiary'
-	| 'on-tertiary'
 	| 'tertiary-container'
-	| 'on-tertiary-container'
 	| 'error'
-	| 'on-error'
 	| 'error-container'
-	| 'on-error-container'
 	| 'background'
-	| 'on-background'
 	| 'surface'
-	| 'on-surface'
 	| 'surface-variant'
-	| 'on-surface-variant'
 	| 'outline'
 	| 'outline-variant'
 	| 'shadow'
 	| 'scrim'
 	| 'inverse-primary'
-	| 'inverse-on-surface'
 	| 'inverse-surface'
 	| 'primary-dynamic'
-	| 'on-primary-dynamic'
 	| 'primary-container-dynamic'
-	| 'on-primary-container-dynamic'
 	| 'secondary-dynamic'
-	| 'on-secondary-dynamic'
 	| 'secondary-container-dynamic'
-	| 'on-secondary-container-dynamic'
 	| 'tertiary-dynamic'
-	| 'on-tertiary-dynamic'
 	| 'tertiary-container-dynamic'
-	| 'on-tertiary-container-dynamic'
 	| 'error-dynamic'
-	| 'on-error-dynamic'
 	| 'error-container-dynamic'
-	| 'on-error-container-dynamic'
 	| 'background-dynamic'
-	| 'on-background-dynamic'
 	| 'surface-dynamic'
-	| 'on-surface-dynamic'
 	| 'surface-variant-dynamic'
-	| 'on-surface-variant-dynamic'
 	| 'outline-dynamic'
 	| 'outline-variant-dynamic'
 	| 'shadow-dynamic'
 	| 'scrim-dynamic'
 	| 'inverse-primary-dynamic'
-	| 'inverse-on-surface-dynamic'
 	| 'inverse-surface-dynamic';
+
+export type IThemeTextColors =
+	| 'on-primary'
+	| 'on-primary-container'
+	| 'on-secondary'
+	| 'on-secondary-container'
+	| 'on-tertiary'
+	| 'on-tertiary-container'
+	| 'on-error'
+	| 'on-error-container'
+	| 'on-background'
+	| 'on-surface'
+	| 'on-surface-variant'
+	| 'inverse-on-surface'
+	| 'on-primary-dynamic'
+	| 'on-primary-container-dynamic'
+	| 'on-secondary-dynamic'
+	| 'on-secondary-container-dynamic'
+	| 'on-tertiary-dynamic'
+	| 'on-tertiary-container-dynamic'
+	| 'on-error-dynamic'
+	| 'on-error-container-dynamic'
+	| 'on-background-dynamic'
+	| 'on-surface-dynamic'
+	| 'on-surface-variant-dynamic'
+	| 'inverse-on-surface-dynamic';
+
+export type ThemeColors = IThemeBackgroundColors | IThemeTextColors;
 
 export interface Theme {
 	spacing: {
@@ -139,63 +143,68 @@ export const themeConfigs: Theme = {
 	},
 };
 
-export const themePaletteKeys = [
+export const themeBackgroundPaletteKeys = [
 	'primary',
-	'on-primary',
 	'primary-container',
-	'on-primary-container',
 	'secondary',
-	'on-secondary',
 	'secondary-container',
-	'on-secondary-container',
 	'tertiary',
-	'on-tertiary',
 	'tertiary-container',
-	'on-tertiary-container',
 	'error',
-	'on-error',
 	'error-container',
-	'on-error-container',
 	'background',
-	'on-background',
 	'surface',
-	'on-surface',
 	'surface-variant',
-	'on-surface-variant',
 	'outline',
 	'outline-variant',
 	'shadow',
 	'scrim',
 	'inverse-primary',
-	'inverse-on-surface',
 	'inverse-surface',
 	'primary-dynamic',
-	'on-primary-dynamic',
 	'primary-container-dynamic',
-	'on-primary-container-dynamic',
 	'secondary-dynamic',
-	'on-secondary-dynamic',
 	'secondary-container-dynamic',
-	'on-secondary-container-dynamic',
 	'tertiary-dynamic',
-	'on-tertiary-dynamic',
 	'tertiary-container-dynamic',
-	'on-tertiary-container-dynamic',
 	'error-dynamic',
-	'on-error-dynamic',
 	'error-container-dynamic',
-	'on-error-container-dynamic',
 	'background-dynamic',
-	'on-background-dynamic',
 	'surface-dynamic',
-	'on-surface-dynamic',
 	'surface-variant-dynamic',
-	'on-surface-variant-dynamic',
 	'outline-dynamic',
 	'outline-variant-dynamic',
 	'shadow-dynamic',
 	'scrim-dynamic',
 	'inverse-primary-dynamic',
-	'inverse-on-surface-dynamic',
 	'inverse-surface-dynamic',
 ] as const;
+
+export const themeTextPaletteKeys = [
+	'on-primary',
+	'on-primary-container',
+	'on-secondary',
+	'on-secondary-container',
+	'on-tertiary',
+	'on-tertiary-container',
+	'on-error',
+	'on-error-container',
+	'on-background',
+	'on-surface',
+	'on-surface-variant',
+	'inverse-on-surface',
+	'on-primary-dynamic',
+	'on-primary-container-dynamic',
+	'on-secondary-dynamic',
+	'on-secondary-container-dynamic',
+	'on-tertiary-dynamic',
+	'on-tertiary-container-dynamic',
+	'on-error-dynamic',
+	'on-error-container-dynamic',
+	'on-background-dynamic',
+	'on-surface-dynamic',
+	'on-surface-variant-dynamic',
+	'inverse-on-surface-dynamic',
+] as const;
+
+export const themePaletteKeys = [...themeBackgroundPaletteKeys, ...themeTextPaletteKeys] as const;

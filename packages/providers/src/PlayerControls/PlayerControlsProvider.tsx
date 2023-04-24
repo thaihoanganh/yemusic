@@ -1,8 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createRef, Fragment, PropsWithChildren, useContext, useEffect } from 'react';
 
 import createSingletonAppContext from '../createSingletonAppContext';
 
-import { IPlayerControlsEntity } from './entity';
+export interface IPlayerControlsEntity {
+	duration: number;
+	currentTime: number;
+	isPlaying: boolean;
+	isShuffling: boolean;
+	repeatMode: 'none' | 'one' | 'all';
+	volume: number;
+	isMute: boolean;
+	audioRef: any;
+}
 
 export const initialPlayerControlsState: IPlayerControlsEntity = {
 	isPlaying: false,

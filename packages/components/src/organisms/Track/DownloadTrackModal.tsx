@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 
 import { TracksContext, setAudioUrlTrack } from '@yemusic/providers';
-import { trackService } from '@yemusic/services/v1';
+import { tracksService } from '@yemusic/services/v1';
 
 import { UnstyledButton } from '../../atoms/Button';
 import { Frame, Group, Stack } from '../../atoms/Frame';
@@ -21,17 +21,18 @@ export const DownloadTrackModal = () => {
 	const track = tracks.find(track => track.id === trackId);
 
 	useEffect(() => {
-		if (isOpenModalDownloadTrack && trackId && !track?.audio.length) {
+		if (isOpenModalDownloadTrack && trackId && !track?.audioFormats.length) {
 			setIsFetching(true);
 
-			trackService
-				.getTracKInfo({
+			tracksService
+				.getTrackDetails({
 					trackId,
 				})
 				.then(data => {
 					setAudioUrlTrack({
 						trackId,
-						audio: data.audio,
+						captions: data.captions,
+						audioFormats: data.audioFormats,
 					});
 				})
 				.finally(() => {
@@ -44,15 +45,15 @@ export const DownloadTrackModal = () => {
 	}, [track, isOpenModalDownloadTrack]);
 
 	const handleDownloadTrack = (type: '.mp4' | '.webm') => {
-		if (track?.audio) {
+		if (track?.audioFormats) {
 			let audioUrl = '';
 
 			switch (type) {
 				case '.mp4':
-					audioUrl = track.audio[1].url;
+					audioUrl = track.audioFormats[1].url;
 					break;
 				case '.webm':
-					audioUrl = track.audio[0].url;
+					audioUrl = track.audioFormats[0].url;
 					break;
 
 				default:

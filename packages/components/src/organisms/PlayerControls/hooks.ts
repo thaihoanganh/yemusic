@@ -2,10 +2,10 @@ import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import {
 	generateId,
-	onAddTrackToPlaylistWithSlug,
+	onAddTrackToPlaylist,
 	onChangeCurrentTime,
 	onChangeVolume,
-	onRemoveTrackFromPlaylistWithSlug,
+	onRemoveTrackFromPlaylist,
 	onSetDuration,
 	onSkipToNextTrack,
 	onSkipToPreviousTrack,
@@ -18,7 +18,7 @@ import {
 	toggleMuteVolume,
 	TracksContext,
 } from '@yemusic/providers';
-import { trackService } from '@yemusic/services/v1';
+import { tracksService } from '@yemusic/services/v1';
 
 import { useTheme } from '../../Theme';
 import { useDownloadTrack } from '../Track';
@@ -47,19 +47,21 @@ export function usePlayerControls() {
 					duration: trackNowPlaying.duration,
 				});
 
-				if (trackNowPlaying.audio.length > 0) {
+				if (trackNowPlaying.audioFormats.length > 0) {
 					onTogglePlaying({
 						isPlaying: true,
 					});
 				} else {
-					trackService
-						.getTracKInfo({
+					tracksService
+						.getTrackDetails({
 							trackId: trackNowPlaying.id,
+							ref: trackNowPlaying.trackingId,
 						})
 						.then(data => {
 							setAudioUrlTrack({
 								trackId: trackNowPlaying.id,
-								audio: data.audio,
+								captions: data.captions,
+								audioFormats: data.audioFormats,
 							});
 							onTogglePlaying({
 								isPlaying: true,
@@ -163,7 +165,7 @@ export function usePlayerControls() {
 				isShuffling: isShuffling,
 			});
 			if (trackNowPlaying) {
-				onAddTrackToPlaylistWithSlug({
+				onAddTrackToPlaylist({
 					slug: 'recently-played',
 					track: {
 						_id: generateId(),
@@ -181,7 +183,7 @@ export function usePlayerControls() {
 		});
 		const { previousTrackId } = onSkipToPreviousTrack();
 		if (trackNowPlaying) {
-			onAddTrackToPlaylistWithSlug({
+			onAddTrackToPlaylist({
 				slug: 'recently-played',
 				track: {
 					_id: generateId(),
@@ -205,7 +207,7 @@ export function usePlayerControls() {
 	const handleToggleLikeTrack = useCallback(() => {
 		if (trackNowPlaying) {
 			if (!trackNowPlaying.isLiked) {
-				onAddTrackToPlaylistWithSlug({
+				onAddTrackToPlaylist({
 					slug: 'liked-tracks',
 					track: {
 						_id: generateId(),
@@ -214,7 +216,7 @@ export function usePlayerControls() {
 					},
 				});
 			} else {
-				onRemoveTrackFromPlaylistWithSlug({
+				onRemoveTrackFromPlaylist({
 					slug: 'liked-tracks',
 					trackId: trackNowPlaying.id,
 				});

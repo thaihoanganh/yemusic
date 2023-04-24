@@ -12,7 +12,7 @@ import { mobileHeaderStyles } from './MobileHeader.css';
 
 export const MobilePlaylistHeader = () => {
 	const router = useRouter();
-	const playlists = useContext(PlaylistsContext.Context);
+	const { playlists } = useContext(PlaylistsContext.Context);
 
 	const playlist = playlists.find(playlist => playlist.slug === router.query.playlistSlug);
 

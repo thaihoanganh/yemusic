@@ -2,7 +2,25 @@ import React, { Fragment, PropsWithChildren } from 'react';
 
 import createSingletonAppContext from '../createSingletonAppContext';
 
-import { ITrackEntity } from './entity';
+export interface ITrackEntity {
+	id: string;
+	title: string;
+	author: string;
+	thumbnail: string;
+	duration: number;
+	source: string[];
+	isLiked: boolean;
+	captions: {
+		baseUrl: string;
+		languageCode: string;
+	}[];
+	audioFormats: {
+		mimeType: string;
+		itag: number;
+		url: string;
+	}[];
+	trackingId?: string;
+}
 
 export type TracksState = ITrackEntity[];
 
