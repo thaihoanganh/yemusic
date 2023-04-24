@@ -1,12 +1,10 @@
 import { styleVariants } from '@vanilla-extract/css';
 
-import { themePaletteKeys } from '../../Theme/theme.config';
+import { themeTextPaletteKeys } from '../../Theme/theme.config';
 import { themeVars } from '../../Theme/Theme.css';
 
-export const textColors = themePaletteKeys.filter(color => color.startsWith('on-'));
-
 const createTypographyColorStyles = () => {
-	const variants = textColors.reduce(
+	const variants = themeTextPaletteKeys.reduce(
 		(acc, type) => {
 			acc[type] = {
 				color: themeVars.palette[type],
@@ -38,7 +36,7 @@ export const typographyTextAlignStyles = styleVariants({
 	},
 });
 
-export const typographyStyles = {
+export const typographySizeStyles = {
 	body: styleVariants({
 		small: {
 			fontSize: '12px',
