@@ -11,11 +11,18 @@ export interface NavigationDrawerProps {
 
 export const NavigationBar = ({ children }: NavigationDrawerProps) => {
 	const router = useRouter();
+	const totalNavigationBarItem = Children.count(children);
 
 	const navigationDrawerChildren = Children.map(children, child => {
 		if (isValidElement(child)) {
+			const navigationBarItemWidth = `calc(100% / ${totalNavigationBarItem})`;
+
 			return cloneElement<NavigationBarItemProps>(child, {
-				isActive: child.props.exact ? router.pathname === child.props.to : router.pathname.startsWith(child.props.to),
+				style: {
+					width: navigationBarItemWidth,
+					minWidth: navigationBarItemWidth,
+				},
+				isActive: child.props.exact ? router.asPath === child.props.to : router.pathname.startsWith(child.props.to),
 			});
 		} else {
 			throw new Error('NavigationBar: children must be valid elements');
